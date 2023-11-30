@@ -1,3 +1,4 @@
+import ship
 class Player:
     def __init__(self, shipList, board, cash, number, powerUps):
         self.shipList = shipList
@@ -6,27 +7,44 @@ class Player:
         self.number = number
         self.powerUps = powerUps
     def createCleanBoard(self):
+        board = []
         for i in range(12):
-            self.board.append([["-"]]*12)
+            board.append([["-"]]*12)
+        self.board = board
     def createShipList(self):
-        return(0)
+        self.shipList.append(ship.Ship(5,5,[]))
+        self.shipList.append(ship.Ship(4,4,[]))
+        self.shipList.append(ship.Ship(3,3,[]))
+        self.shipList.append(ship.Ship(3,3,[]))
+        self.shipList.append(ship.Ship(2,2,[]))
     def placeShip(self):
         for i in self.shipList:
-            coord = input("Place the bottom left corner of your ship: (A1) ").upper()
-            x,y = ord(coord[0])-65, int(coord[1])-1
+            coord = input(f"Place the bottom left corner of your {i.length} length ship: (A1) ").upper()
+            y,x = ord(coord[0])-65, int(coord[1])-1
             allignment = input("Vertical or Horizontal: ").lower()
             if allignment == "vertical":
                 for j in range(i.length):
-                    self.board[y+j][x] = "S"
+                    self.board[y-j][x] = "S"
+                    i.coordinates.append([y-j,x])
             elif allignment == "horizontal":
                 for j in range(i.length):
                     self.board[y][x+j] = "S"
+                    i.coordinates.append([y,x+j])
+            for i in self.board:
+                print(i)
     def shootMissile(self, enemy):
         coord = input("Shoot your missile: (A1) ").upper()
         x,y = ord(coord[0])-65, int(coord[1])-1
         if enemy.board[y][x] == "S":
             enemy.board[y][x] = "H"
             print("Hit!")
+            for i in enemy.shipList:
+                for coord in i.coordinates:
+                    if coord == [y,x]:
+                        i.health -= 1
+                        if i.health == 0:
+                            print("Sunk!")
+                            self.cash += 100
         else:
             print("Miss!")
     
