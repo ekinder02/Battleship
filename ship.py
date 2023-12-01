@@ -13,4 +13,3 @@ class Ship:
     def sink(self):
         self.health = 0
         return True
-
