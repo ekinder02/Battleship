@@ -52,3 +52,5 @@ class powerUps:
         else:
             Player.cash -= 50
             Player.powerUps.append("X Hit")
+
+
