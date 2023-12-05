@@ -8,11 +8,12 @@ class Player:
         self.number = number
         self.powerUps = powerUps
     def createCleanBoard(self):
-        board = []
+        self.board = []
+        self.firingBoard = []
         for i in range(12):
-            board.append(["-"]*12)
-        self.board = board.copy()
-        self.firingBoard = board.copy()
+            self.board.append(["-"]*12)
+            self.firingBoard.append(["-"]*12)
+            
     def createShipList(self):
         self.shipList.append(ship.Ship(5,5,[]))
         #self.shipList.append(ship.Ship(4,4,[]))
@@ -63,7 +64,7 @@ class Player:
         else:
             return False
 
-    def choosePowerUp(self, enemy):
+    def choosePowerUp(self,enemy):
         print("You have the following power ups: ")
 
         for i in self.powerUps:
@@ -72,7 +73,7 @@ class Player:
         if x == "2x2":
             self.use2x2(enemy)
         elif x == "uav":
-            self.useUAV()
+            self.useUAV(enemy)
         elif x == "airstrike":
             self.useAirstrike()
         elif x == "boat upgrade":
@@ -271,15 +272,30 @@ class Player:
                     else:
                         print(row[i])
     def useUAV(self,enemy):
-        choice = input("Which row[A]/column[1] do you want to reveal? ").upper()
+        choice = input("Which row[1]/column[A] do you want to reveal? ").upper()
         if choice.isdigit():
             y = int(choice)-1
-            for i in enemy.board:
-                if i[y] == "S":
-                    i[y] = "H"
-                if i[y] == "-":
-                    i[y] = "M"
+            for x,v in enumerate(enemy.board):
+                if v[y] == "S":
+                    self.firingBoard[x][y] = "S"
+                elif v[y] == "-":
+                    self.firingBoard[x][y] = "M"
         else:
             x = ord(choice)-65
+            for i,v in enumerate(enemy.board):
+                if i == x:
+                    for y,j in enumerate(v):
+                        print(j)
+                        if j == "S":
+                            self.firingBoard[x][y] = "S"
+                        if j == "-":
+                            self.firingBoard[x][y] = "M"
+                            
+        for row in self.firingBoard:
+                for i in range(12):
+                    if i != 11:
+                        print(row[i], end=" ")
+                    else:
+                        print(row[i])
         
         
