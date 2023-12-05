@@ -161,3 +161,107 @@ class Player:
                 self.buyXHit()
         else:
             return False
+        
+    def buy2x2(self):
+        if self.cash < 10:
+            print("Not enough cash!")
+            return False
+        else:
+            self.cash -= 10
+            self.powerUps.append("2x2")
+            print("2x2 power up bought!")
+    
+    def buyUAV(self):
+        if self.cash < 25:
+            print("Not enough cash!")
+            return False
+        else:
+            self.cash -= 25
+            self.powerUps.append("UAV")
+            print("UAV power up bought!")
+    
+    def buyAirstrike(self):
+        if self.cash < 50:
+            print("Not enough cash!")
+            return False
+        else:
+            self.cash -= 50
+            self.powerUps.append("Airstrike")
+            print("Airstrike power up bought!")
+
+    def buyBoatUpgrade(self):
+        if self.cash < 50:
+            print("Not enough cash!")
+            return False
+        else:
+            self.cash -= 50
+            self.powerUps.append("Boat Upgrade")
+            print("Boat Upgrade power up bought!")
+    
+    def buyMoveBoat(self):
+        if self.cash < 50:
+            print("Not enough cash!")
+            return False
+        else:
+            self.cash -= 50
+            self.powerUps.append("Move Boat")
+            print("Move Boat power up bought!")
+    
+    def buyTwoMoves(self):
+        if self.cash < 50:
+            print("Not enough cash!")
+            return False
+        else:
+            self.cash -= 50
+            self.powerUps.append("Two Moves")
+            print("Two Moves power up bought!")
+
+    def buyXHit(self):
+        if self.cash < 50:
+            print("Not enough cash!")
+            return False
+        else:
+            self.cash -= 50
+            self.powerUps.append("X Hit")
+            print("X Hit power up bought!")
+
+    def use2x2(self):
+        coord = input("Place the bottom left corner of your 2x2: (A1 - L12) ").upper()
+        if len(coord) == 2:
+            y,x = int(coord[1])-1, ord(coord[0])-65
+            for i in range(2):
+                for j in range(2):
+                    if self.board[y-i][x+j] == "S":
+                        self.board[y-i][x+j] = "H"
+                        for ship in self.shipList:
+                            for coord in ship.coordinates:
+                                if coord == [y-i,x+j]:
+                                    ship.health -= 1
+                                    if ship.health == 0:
+                                        print("Sunk!")
+                                        self.cash += 100
+            for row in self.board:
+                for i in range(12):
+                    if i != 11:
+                        print(row[i], end=" ")
+                    else:
+                        print(row[i])
+        else:
+            y,x = int(coord[1:])-1, ord(coord[0])-65
+            for i in range(2):
+                for j in range(2):
+                    if self.board[y-i][x+j] == "S":
+                        self.board[y-i][x+j] = "H"
+                        for ship in self.shipList:
+                            for coord in ship.coordinates:
+                                if coord == [y-i,x+j]:
+                                    ship.health -= 1
+                                    if ship.health == 0:
+                                        print("Sunk!")
+                                        self.cash += 100
+            for row in self.board:
+                for i in range(12):
+                    if i != 11:
+                        print(row[i], end=" ")
+                    else:
+                        print(row[i])
