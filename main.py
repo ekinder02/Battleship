@@ -19,7 +19,7 @@ def main():
         player1.buyPowerUps()
         power1 = player1.usePowerUp()
         if power1 != False:
-            player1.choosePowerUp()
+            player1.choosePowerUp(player2)
         else:
             print("Player 1 did not use a power up.")
             print("Player 1: ")
@@ -31,7 +31,7 @@ def main():
         player2.buyPowerUps()
         power2 = player2.usePowerUp()
         if power2 != False:
-            player2.choosePowerUp()
+            player2.choosePowerUp(player1)
         else:
             print("Player 2 did not use a power up.")
             print("Player 2: ")
