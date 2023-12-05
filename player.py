@@ -11,8 +11,8 @@ class Player:
         board = []
         for i in range(12):
             board.append(["-"]*12)
-        self.board = board
-        self.firingBoard = board
+        self.board = board.copy()
+        self.firingBoard = board.copy()
     def createShipList(self):
         self.shipList.append(ship.Ship(5,5,[]))
         #self.shipList.append(ship.Ship(4,4,[]))
