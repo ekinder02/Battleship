@@ -1,9 +1,10 @@
 import ship
 class Player:
-    def __init__(self, shipList, board, cash, number, powerUps):
+    def __init__(self, shipList, board, cash, number, powerUps,firingBoard):
         self.shipList = shipList
         self.board = board
         self.cash = cash
+        self.firingBoard = firingBoard
         self.number = number
         self.powerUps = powerUps
     def createCleanBoard(self):
@@ -11,6 +12,7 @@ class Player:
         for i in range(12):
             board.append(["-"]*12)
         self.board = board
+        self.firingBoard = board
     def createShipList(self):
         self.shipList.append(ship.Ship(5,5,[]))
         #self.shipList.append(ship.Ship(4,4,[]))
@@ -265,3 +267,16 @@ class Player:
                         print(row[i], end=" ")
                     else:
                         print(row[i])
+    def useUAV(self,enemy):
+        choice = input("Which row[A]/column[1] do you want to reveal? ").upper()
+        if choice.isdigit():
+            y = int(choice)-1
+            for i in enemy.board:
+                if i[y] == "S":
+                    i[y] = "H"
+                if i[y] == "-":
+                    i[y] = "M"
+        else:
+            x = ord(choice)-65
+        
+        
