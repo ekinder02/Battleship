@@ -63,13 +63,14 @@ class Player:
         else:
             return False
 
-    def choosePowerUp(self):
+    def choosePowerUp(self, enemy):
         print("You have the following power ups: ")
+
         for i in self.powerUps:
             print(i)
         x = input("Which power up do you want to use? ").lower()
         if x == "2x2":
-            self.use2x2()
+            self.use2x2(enemy)
         elif x == "uav":
             self.useUAV()
         elif x == "airstrike":
@@ -85,21 +86,6 @@ class Player:
     
     def shootMissile(self, enemy):
         coord = input("Shoot your missile: (A1) ").upper()
-        x,y = ord(coord[0])-65, int(coord[1])-1
-        if enemy.board[y][x] == "S":
-            enemy.board[y][x] = "H"
-            print("Hit!")
-            for i in enemy.shipList:
-                for coord in i.coordinates:
-                    if coord == [y,x]:
-                        i.health -= 1
-                        if i.health == 0:
-                            print("Sunk!")
-                            self.cash += 100
-        else:
-            print("Miss!")
-    def shootMissile(self, enemy):
-        coord = input("Shoot your missile: (A1) ").upper()
         if len(coord) == 2:
             x,y = ord(coord[0])-65, int(coord[1])-1
             if enemy.board[y][x] == "S":
@@ -112,8 +98,11 @@ class Player:
                             if i.health == 0:
                                 print("Sunk!")
                                 self.cash += 100
+            elif enemy.board[y][x] == "H":
+                print("Already hit!")
             else:
                 print("Miss!")
+                enemy.board[y][x] = "M"
         else:
             x,y = ord(coord[0])-65, int(coord[1:])-1
             if enemy.board[y][x] == "S":
@@ -126,8 +115,17 @@ class Player:
                             if i.health == 0:
                                 print("Sunk!")
                                 self.cash += 100
+            elif enemy.board[y][x] == "H":
+                print("Already hit!")
             else:
+                enemy.board[y][x] = "M"
                 print("Miss!")
+        for row in enemy.board:
+                    for i in range(12):
+                        if i != 11:
+                            print(row[i], end=" ")
+                        else:
+                            print(row[i])
     def checkWin(self):
         for i in self.shipList:
             if i.checkHealth() == False:
@@ -227,22 +225,25 @@ class Player:
             self.powerUps.append("X Hit")
             print("X Hit power up bought!")
 
-    def use2x2(self):
+    def use2x2(self, enemy):
         coord = input("Place the bottom left corner of your 2x2: (A1 - L12) ").upper()
         if len(coord) == 2:
             y,x = int(coord[1])-1, ord(coord[0])-65
             for i in range(2):
                 for j in range(2):
-                    if self.board[y-i][x+j] == "S":
-                        self.board[y-i][x+j] = "H"
-                        for ship in self.shipList:
+                    if enemy.board[y-i][x+j] == "S":
+                        enemy.board[y-i][x+j] = "H"
+                        for ship in enemy.shipList:
                             for coord in ship.coordinates:
                                 if coord == [y-i,x+j]:
                                     ship.health -= 1
                                     if ship.health == 0:
                                         print("Sunk!")
                                         self.cash += 100
-            for row in self.board:
+                    elif enemy.board[y-i][x+j] == "-":
+                        enemy.board[y-i][x+j] = "M"
+            #Can delete this later just showing if it works right now
+            for row in enemy.board:
                 for i in range(12):
                     if i != 11:
                         print(row[i], end=" ")
@@ -252,16 +253,18 @@ class Player:
             y,x = int(coord[1:])-1, ord(coord[0])-65
             for i in range(2):
                 for j in range(2):
-                    if self.board[y-i][x+j] == "S":
-                        self.board[y-i][x+j] = "H"
-                        for ship in self.shipList:
+                    if enemy.board[y-i][x+j] == "S":
+                        enemy.board[y-i][x+j] = "H"
+                        for ship in enemy.shipList:
                             for coord in ship.coordinates:
                                 if coord == [y-i,x+j]:
                                     ship.health -= 1
                                     if ship.health == 0:
                                         print("Sunk!")
                                         self.cash += 100
-            for row in self.board:
+                    elif enemy.board[y-i][x+j] == "-":
+                        enemy.board[y-i][x+j] = "M"
+            for row in enemy.board:
                 for i in range(12):
                     if i != 11:
                         print(row[i], end=" ")
