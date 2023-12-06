@@ -1,11 +1,38 @@
+import pygame
 import player
 player1 = player.Player([],[],100,1,[],[])
 player1.createCleanBoard()
 player2 = player.Player([],[],100,2,[],[])
 player2.createCleanBoard()
 
+pygame.init()
+main_clock = pygame.time.Clock()
+height = 720
+width = 1280
+SCREEN = pygame.display.set_mode((width, height))
+BG = pygame.image.load("battleshipBG2.jpg")
+BG = pygame.transform.scale(BG, (width, height))
 
-def main():
+def main_menu():
+    while True:
+        SCREEN.blit(BG, (0, 0))
+        pygame.display.update()
+        main_clock.tick(60)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                pass
+
+main_menu()
+
+
+
+
+
+
+'''def main():
     for i in player1.board:
         print(i)
     player1.createShipList()
@@ -40,4 +67,4 @@ def main():
             print("Player 2 wins!")
             break
 
-main()
+main()'''
