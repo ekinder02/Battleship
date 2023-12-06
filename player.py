@@ -110,6 +110,23 @@ class Player:
                             print(row[i], end=" ")
                         else:
                             print(row[i])
+    def shootMissileParam(self, enemy,coord):
+        x,y = ord(coord[0])-65, int(coord[1:])-1
+        if enemy.board[y][x] == "S":
+            self.firingBoard[y][x] = "H"
+            for i in enemy.shipList:
+                for coord in i.coordinates:
+                    if coord == [y,x]:
+                        i.health -= 1
+                        if i.health == 0:
+                            print("Sunk!")
+                            self.cash += 100
+        elif self.firingboard[y][x] == "H":
+            print("Already hit!")
+        else:
+            self.firingboard[y][x] = "M"
+            print("Miss!")
+
     def checkWin(self):
         for i in self.shipList:
             if i.checkHealth() == False:
@@ -324,4 +341,10 @@ class Player:
     def useTwoMoves(self, enemy):
         self.shootMissile(enemy)
         self.shootMissile(enemy)
-    
+    def useXHit(self,enemy):
+        coord = input("Place the bottom center of your X strike: (A1 - L12) ").upper()
+        if len(coord) == 2:
+            y,x = int(coord[1])-1, ord(coord[0])-65
+        self.shootMissileParam(enemy,coord)
+        self.shootMissileParam(enemy,coord)
+        
