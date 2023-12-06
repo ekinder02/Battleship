@@ -110,6 +110,7 @@ class Player:
                             print(row[i], end=" ")
                         else:
                             print(row[i])
+    
     def shootMissileParam(self, enemy,y,x):
         if enemy.board[y][x] == "S":
             self.firingBoard[y][x] = "H"
@@ -224,7 +225,6 @@ class Player:
             self.cash -= 50
             self.powerUps.append("X Hit")
             print("X Hit power up bought!")
-
     def use2x2(self, enemy):
         coord = input("Place the bottom left corner of your 2x2: (A1 - L12) ").upper()
         if len(coord) == 2:
@@ -270,8 +270,7 @@ class Player:
                         print(row[i], end=" ")
                     else:
                         print(row[i])
-
-
+        self.powerUps.remove("2x2")
     def useAirstrike(self, enemy):
         coords = []
         coord_options = []
@@ -310,6 +309,7 @@ class Player:
                             print(row[i], end=" ")
                         else:
                             print(row[i])
+        self.powerUps.remove("useAirstrike")
     def useUAV(self,enemy):
         choice = input("Which row[1]/column[A] do you want to reveal? ").upper()
         if choice.isdigit():
@@ -336,10 +336,11 @@ class Player:
                         print(row[i], end=" ")
                     else:
                         print(row[i])
-
+        self.powerUps.remove("UAV")
     def useTwoMoves(self, enemy):
         self.shootMissile(enemy)
         self.shootMissile(enemy)
+        self.powerUps.remove("useTwoMoves")
     def useXHit(self,enemy):
         coord = input("Place the center of your X strike: (A1 - L12) ").upper()
         if len(coord) == 2:
@@ -359,4 +360,5 @@ class Player:
                     print(row[i], end=" ")
                 else:
                     print(row[i])
+        self.powerUps.remove("X Hit")
         
