@@ -4,7 +4,13 @@ player1 = player.Player([],[],100,1,[],[])
 player1.createCleanBoard()
 player2 = player.Player([],[],100,2,[],[])
 player2.createCleanBoard()
+player1.board[0][0] = "S"
+player1.board[0][1] = "S"
+player1.board[0][2] = "S"
+player1.board[1][1] = "H"
+player1.board[1][0] = "M"
 
+from kivy.uix.textinput import TextInput
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
@@ -28,18 +34,58 @@ class BattleshipApp(App):
 class GameManager(Widget):
     def __init__(self, **args):
         super(GameManager, self).__init__(**args)
-        self.SelectionBar()
+        self.startGame()
     
-    def SelectionBar(self):
+    def startGame(self):
+        self.makeBoard(player1)
+        self.takeInput(player1)
+    
+    def makeBoard(self,player):
         layout = GridLayout(cols = 12, rows = 12,size = (500, 500), pos = (0,0))
-        
-        for i in range(144):
-            layout.add_widget(Button(text ="",
-                        color =(1, 1, 1, 1),
+        layout.clear_widgets()
+        for y,row in enumerate(player.board):
+            for x,cell in enumerate(row):
+                if cell == "-":
+                    layout.add_widget(Button(text ="",
+                        background_color =(1, 1, 1, 1),
+                        size = (100, 100),
+                        pos = (0,0),
+                    ))
+                elif cell == "S":
+                    print("S")
+                    layout.add_widget(Button(text ="",
+                        background_color =(1, 1, 255, 1),
+                        size = (100, 100),
+                        pos = (0,0),
+                    ))
+                elif cell == "M":
+                    layout.add_widget(Button(text ="",
+                        background_color =(255, 255, 255, 1),
+                        size = (100, 100),
+                        pos = (0,0),
+                    ))
+                elif cell == "H":
+                    layout.add_widget(Button(text ="",
+                        background_color =(255, 1, 1, 1),
                         size = (100, 100),
                         pos = (0,0),
                     ))
         self.add_widget(layout)
+    
+    def takeInput(self,player):
+        layout = GridLayout(cols = 1, rows = 2,size = (200, 200), pos = (500,0))
+        layout.add_widget(TextInput(font_size = 50, 
+                      size_hint_y = None, 
+                      height = 100) )
+        
+        layout.add_widget(Button(text ="Fire!",
+                        background_color =(255, 1, 1, 1),
+                        size = (100, 100),
+                        pos = (0,0),
+                    ))
+        self.add_widget(layout)
+                    
+        
 
 root = BattleshipApp() 
 root.run()
