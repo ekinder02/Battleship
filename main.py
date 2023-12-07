@@ -12,19 +12,26 @@ width = 1280
 SCREEN = pygame.display.set_mode((width, height))
 BG = pygame.image.load("battleshipBG2.jpg")
 BG = pygame.transform.scale(BG, (width, height))
+font = pygame.font.SysFont("Arial", 30)
+start_button = pygame.image.load("startGame2.png")
+
+
+
 
 def main_menu():
     while True:
         SCREEN.blit(BG, (0, 0))
         pygame.display.update()
         main_clock.tick(60)
+        start_button_rect = start_button.get_rect(center = (width/2, height/2))
+        SCREEN.blit(start_button, start_button_rect)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 pass
-
+        
 main_menu()
 
 
