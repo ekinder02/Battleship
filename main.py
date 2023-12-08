@@ -73,7 +73,7 @@ class GameManager(Widget):
         self.add_widget(layout)
     
     def takeInput(self,player):
-        layout = GridLayout(cols = 1, rows = 2,size = (200, 200), pos = (500,0))
+        layout = GridLayout(cols = 1, rows = 2,size = (150, 150), pos = (500,0))
         t = TextInput(font_size = 50, 
                       size_hint_y = None, 
                       height = 100)
