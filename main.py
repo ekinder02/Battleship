@@ -84,7 +84,7 @@ class GameManager(Widget):
                         pos = (0,0),
                     )
         
-        btn.bind(on_press = lambda x: player.shootMissileParam(player2,int(t.text[1:])-1,ord(t.text[0])-65))
+        btn.bind(on_press = lambda x: player.shootMissileParam(player1,int(t.text[1:])-1,ord(t.text[0])-65))
         layout.add_widget(btn)
         layout.add_widget(t)
         self.add_widget(layout)
