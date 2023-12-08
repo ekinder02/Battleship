@@ -39,6 +39,7 @@ class GameManager(Widget):
     def startGame(self):
         self.makeBoard(player1)
         self.takeInput(player1)
+        self.clock = Clock.schedule_interval(self.update, 1.0/120)
     
     def makeBoard(self,player):
         layout = GridLayout(cols = 12, rows = 12,size = (500, 500), pos = (0,0))
@@ -52,7 +53,6 @@ class GameManager(Widget):
                         pos = (0,0),
                     ))
                 elif cell == "S":
-                    print("S")
                     layout.add_widget(Button(text ="",
                         background_color =(1, 1, 255, 1),
                         size = (100, 100),
@@ -74,16 +74,23 @@ class GameManager(Widget):
     
     def takeInput(self,player):
         layout = GridLayout(cols = 1, rows = 2,size = (200, 200), pos = (500,0))
-        layout.add_widget(TextInput(font_size = 50, 
+        t = TextInput(font_size = 50, 
                       size_hint_y = None, 
-                      height = 100) )
+                      height = 100)
         
-        layout.add_widget(Button(text ="Fire!",
+        btn = Button(text ="Fire!",
                         background_color =(255, 1, 1, 1),
                         size = (100, 100),
                         pos = (0,0),
-                    ))
+                    )
+        
+        btn.bind(on_press = lambda x: player.shootMissileParam(player2,int(t.text[1:])-1,ord(t.text[0])-65))
+        layout.add_widget(btn)
+        layout.add_widget(t)
         self.add_widget(layout)
+    
+    def update(self,ndt):
+        self.makeBoard(player1)
                     
         
 

@@ -114,6 +114,7 @@ class Player:
     def shootMissileParam(self, enemy,y,x):
         if enemy.board[y][x] == "S":
             self.firingBoard[y][x] = "H"
+            enemy.board[y][x] = "H"
             for i in enemy.shipList:
                 for coord in i.coordinates:
                     if coord == [y,x]:
@@ -125,6 +126,7 @@ class Player:
             print("Already hit!")
         elif enemy.board[y][x] == "-":
             self.firingBoard[y][x] = "M"
+            enemy.board[y][x] = "M"
             print("Miss!")
 
     def checkWin(self):
