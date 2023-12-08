@@ -2,13 +2,9 @@ import pygame
 import player
 player1 = player.Player([],[],100,1,[],[])
 player1.createCleanBoard()
+player1.createShipList()
 player2 = player.Player([],[],100,2,[],[])
 player2.createCleanBoard()
-player1.board[0][0] = "S"
-player1.board[0][1] = "S"
-player1.board[0][2] = "S"
-player1.board[1][1] = "H"
-player1.board[1][0] = "M"
 
 from kivy.uix.textinput import TextInput
 from kivy.app import App
@@ -40,8 +36,24 @@ class GameManager(Widget):
         self.makeBoard(player1)
         self.takeInput(player1)
         self.makeFiringBoard(player1)
+        self.placeShip(player1)
         global playerTurn
         playerTurn = 1
+    
+    def placeShip(self,player):
+        layout = GridLayout(cols = 1, rows = 2,size = (200, 200), pos = (500,200))
+        shipLabel = TextInput(font_size = 50, 
+                      size_hint_y = None, 
+                      height = 100)
+        placeButton = Button(text ="Place Ship",
+                        background_color =(255, 1, 1, 1),
+                        size = (100, 100),
+                        pos = (0,0),
+                    )
+        placeButton.bind(on_press = lambda x: player.placeShip(player.shipList[0],int(shipLabel.text[1:])-1,ord(shipLabel.text[0])-65))
+        layout.add_widget(placeButton)
+        layout.add_widget(shipLabel)
+        self.add_widget(layout)
     
     def makeBoard(self,player):
         global layout
