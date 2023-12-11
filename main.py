@@ -26,19 +26,34 @@ class BattleshipApp(App):
     def build(self):
         game = GameManager()
         return game
+    
+
 
 class GameManager(Widget):
     def __init__(self, **args):
         super(GameManager, self).__init__(**args)
         self.startGame()
-    
+
+
     def startGame(self):
         self.makeBoard(player1)
         self.takeInput(player1)
         self.makeFiringBoard(player1)
         self.placeShip(player1)
+        self.backgroundImageButton()
         global playerTurn
         playerTurn = 1
+
+    def backgroundImageButton(self):
+        self.backgroundImage = Button(text ="", size = (2000, 1000),
+                     background_normal = 'battleshipBG2.jpg',
+                     size_hint = (2000, 1000),
+                     pos_hint = {"x":100, "y":100}
+                   )
+        self.backgroundImage.bind(on_press = lambda x: self.remove_widget(self.backgroundImage))
+        self.add_widget(self.backgroundImage)
+        
+
     
     def placeShip(self,player):
         layout = GridLayout(cols = 1, rows = 2,size = (200, 200), pos = (500,200))
