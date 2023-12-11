@@ -1,4 +1,3 @@
-import pygame
 import player
 player1 = player.Player([],[],100,1,[],[])
 player1.createCleanBoard()
@@ -28,18 +27,12 @@ class BattleshipApp(App):
         game = GameManager()
         return game
     
-
-
 class GameManager(Widget):
     def __init__(self, **args):
         super(GameManager, self).__init__(**args)
         self.startGame()
-
-
+        
     def startGame(self):
-        self.makeBoard(player1)
-        self.placeShip()
-        self.backgroundImageButton()
         global playerTurn
         global currentPlayer
         global showBackground
@@ -48,6 +41,12 @@ class GameManager(Widget):
         showBackground = True
         playerTurn = 1
         currentPlayer = player1
+        self.makeBoard(player1)
+        self.placeShip()
+        self.placeShipText()
+        self.label()
+        self.instructions()
+        self.backgroundImageButton()
         self.clock = Clock.schedule_interval(self.update, 1.0/360.0)
 
     def make_shop(self, player):
@@ -112,10 +111,10 @@ class GameManager(Widget):
         self.remove_widget(btn)
         showBackground = False
         
-        
     def placeShip(self):
         global placeShipLayout
-        placeShipLayout = GridLayout(cols = 1, rows = 2,size = (200, 200), pos = (500,200))
+        global placeShipLabel
+        placeShipLayout = GridLayout(cols = 1, rows = 2,size = (150, 200), pos = (550,200))
         shipLabel = TextInput(font_size = 50, 
                       size_hint_y = None, 
                       height = 100)
@@ -125,7 +124,7 @@ class GameManager(Widget):
                         pos = (0,0),
                     )
         global currentPlayer
-        placeButton.bind(on_press = lambda x: currentPlayer.placeShip(currentPlayer.shipList[0],int(shipLabel.text[1:shipLabel.text.index(" ")])-1,ord(shipLabel.text[0])-65,shipLabel.text[shipLabel.text.index(" ")+1:]))
+        placeButton.bind(on_press = lambda x: currentPlayer.placeShip(currentPlayer.shipList[0],int(shipLabel.text[1:shipLabel.text.index(" ")])-1,ord(shipLabel.text[0])-65,shipLabel.text[shipLabel.text.index(" ")+1:],placeShipLabel))
         placeShipLayout.add_widget(placeButton)
         placeShipLayout.add_widget(shipLabel)
         self.add_widget(placeShipLayout)
@@ -159,6 +158,16 @@ class GameManager(Widget):
                         size = (100, 100),
                         pos = (0,0),
                     ))
+        labelLayoutY = GridLayout(cols = 12, rows = 1,size = (500, 500), pos = (0,275))
+        letters = ["A","B","C","D","E","F","G","H","I","J","K","L"]
+        for i in letters:
+            labelLayoutY.add_widget(Label(text = i, font_size = 32))
+        
+        labelLayoutX = GridLayout(cols = 1, rows = 12,size = (500, 500), pos = (275,0))
+        for i in range(12):
+            labelLayoutX.add_widget(Label(text = str(i+1), font_size = 32)) 
+        self.add_widget(labelLayoutY)
+        self.add_widget(labelLayoutX)
         self.add_widget(layout)
     
     def makeFiringBoard(self,player):
@@ -190,10 +199,21 @@ class GameManager(Widget):
                         size = (100, 100),
                         pos = (0,0),
                     ))
+        
+        labelLayoutY = GridLayout(cols = 12, rows = 1,size = (500, 500), pos = (700,275))
+        letters = ["A","B","C","D","E","F","G","H","I","J","K","L"]
+        for i in letters:
+            labelLayoutY.add_widget(Label(text = i, font_size = 32))
+        
+        labelLayoutX = GridLayout(cols = 1, rows = 12,size = (500, 500), pos = (975,0))
+        for i in range(12):
+            labelLayoutX.add_widget(Label(text = str(i+1), font_size = 32)) 
+        self.add_widget(labelLayoutY)
+        self.add_widget(labelLayoutX)
         self.add_widget(firingLayout)
     
     def takeInput(self,player):
-        layout = GridLayout(cols = 1, rows = 2,size = (200, 200), pos = (500,0))
+        layout = GridLayout(cols = 1, rows = 2,size = (150, 200), pos = (550,200))
         global t
         t = TextInput(font_size = 50, 
                       size_hint_y = None, 
@@ -219,11 +239,13 @@ class GameManager(Widget):
         global playerTurn
         global btn
         global firingLayout
+        global mainLabel
         global showBackground
         if playerTurn == player1:
             btn.bind(on_press = lambda x: player2.shootMissileParam(player1,int(t.text[1:])-1,ord(t.text[0])-65))
             currentPlayer = player2
             layout.clear_widgets()
+            mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             firingLayout.clear_widgets()
             self.makeBoard(currentPlayer)
             self.makeFiringBoard(currentPlayer)
@@ -233,17 +255,32 @@ class GameManager(Widget):
             btn.bind(on_press = lambda x: player1.shootMissileParam(player2,int(t.text[1:])-1,ord(t.text[0])-65))
             currentPlayer = player1
             layout.clear_widgets()
+            mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             firingLayout.clear_widgets()
             self.makeBoard(currentPlayer)
             self.makeFiringBoard(currentPlayer)
             self.backgroundImageButton()
             showBackground = True
-    
+            
+    def label(self):
+        global mainLabel
+        mainLabel = Label(text = "Player " + str(currentPlayer.number) + "'s turn", font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (150, 670))
+        self.add_widget(mainLabel)
+    def instructions(self):
+        global instruct
+        instruct = Label(text = "To place a ship, input the spot [A1].\nThis will be the bottom or left corner of your ship.\nThen put a space followed by an 'h' for horziontal or a 'v' for vertical.", font_size = 25, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (750, 670))
+        self.add_widget(instruct)
+    def placeShipText(self):
+        global placeShipLabel
+        placeShipLabel = Label(text = f"Place your {currentPlayer.shipList[0].length} long ship", font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (750, 470))
+        self.add_widget(placeShipLabel)
+        
     def update(self,ndt):
         global currentPlayer
         global showBackground
         global placePhase
         global playerTurn
+        global instruct
         if showBackground == False and placePhase == True:
             layout.clear_widgets()
             self.makeBoard(currentPlayer)
@@ -260,22 +297,21 @@ class GameManager(Widget):
             playerTurn = currentPlayer
         if player1.shipList == [] and player2.shipList != [] and currentPlayer == player1 and placePhase == True:
             currentPlayer = player2
+            mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
+            placeShipLabel.text = "Place your " + str(currentPlayer.shipList[0].length) + " length ship"
         elif player2.shipList == [] and placePhase == True:
             currentPlayer = player1
+            mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             placePhase = False
             self.makeBoard(currentPlayer)
             self.makeFiringBoard(currentPlayer)
             self.remove_widget(placeShipLayout)
             self.takeInput(currentPlayer)
+            instruct.text = "To fire, input the spot [A1].\nThis will be the spot you fire at."
+            self.remove_widget(placeShipLabel)
             
-        
-                    
-        
-
 root = BattleshipApp() 
 root.run()
-
-
 
 '''def main():
     for i in player1.board:

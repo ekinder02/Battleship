@@ -21,10 +21,9 @@ class Player:
         #self.shipList.append(ship.Ship(3,3,[]))
         #self.shipList.append(ship.Ship(3,3,[]))
         #self.shipList.append(ship.Ship(2,2,[]))
-    def placeShip(self,ship,y,x,allignment):
+    def placeShip(self,ship,y,x,allignment,placeShipLabel):
         if ship == None:
             return ()
-        print(allignment)
         if allignment.lower() == "v":
             for j in range(ship.length):
                 self.board[y-j][x] = "S"
@@ -34,6 +33,8 @@ class Player:
                 self.board[y][x+j] = "S"
                 ship.coordinates.append([y,x+j])
         self.shipList.remove(ship)
+        if self.shipList != []:
+            placeShipLabel.text = "Place your " + str(self.shipList[0].length) + " length ship"
     def usePowerUp(self):
         x = input("Do you want to use a power up? (Y/N) ").lower()
         if x == "y":
