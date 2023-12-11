@@ -171,12 +171,25 @@ class GameManager(Widget):
         global playerTurn
         global btn
         global firingLayout
+        global showBackground
         if playerTurn == player1:
             btn.bind(on_press = lambda x: player2.shootMissileParam(player1,int(t.text[1:])-1,ord(t.text[0])-65))
             currentPlayer = player2
+            layout.clear_widgets()
+            firingLayout.clear_widgets()
+            self.makeBoard(currentPlayer)
+            self.makeFiringBoard(currentPlayer)
+            self.backgroundImageButton()
+            showBackground = True
         elif playerTurn == player2:
             btn.bind(on_press = lambda x: player1.shootMissileParam(player2,int(t.text[1:])-1,ord(t.text[0])-65))
             currentPlayer = player1
+            layout.clear_widgets()
+            firingLayout.clear_widgets()
+            self.makeBoard(currentPlayer)
+            self.makeFiringBoard(currentPlayer)
+            self.backgroundImageButton()
+            showBackground = True
     
     def update(self,ndt):
         global currentPlayer
@@ -186,7 +199,7 @@ class GameManager(Widget):
         if showBackground == False and placePhase == True:
             layout.clear_widgets()
             self.makeBoard(currentPlayer)
-        if placePhase == False:
+        if placePhase == False and showBackground == False:
             layout.clear_widgets()
             firingLayout.clear_widgets()
             self.makeBoard(currentPlayer)
