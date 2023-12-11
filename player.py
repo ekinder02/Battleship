@@ -21,43 +21,16 @@ class Player:
         #self.shipList.append(ship.Ship(3,3,[]))
         #self.shipList.append(ship.Ship(3,3,[]))
         #self.shipList.append(ship.Ship(2,2,[]))
-    def placeShip(self):
-        for i in self.shipList:
-            coord = input(f"Place the bottom left corner of your {i.length} length ship: (A1 - L12) ").upper()
-            if len(coord) == 2:
-                y,x = int(coord[1])-1, ord(coord[0])-65
-                allignment = input("Vertical or Horizontal: ").lower()
-                if allignment == "vertical":
-                    for j in range(i.length):
-                        self.board[y-j][x] = "S"
-                        i.coordinates.append([y-j,x])
-                elif allignment == "horizontal":
-                    for j in range(i.length):
-                        self.board[y][x+j] = "S"
-                        i.coordinates.append([y,x+j])
-                for row in self.board:
-                    for i in range(12):
-                        if i != 11:
-                            print(row[i], end=" ")
-                        else:
-                            print(row[i])
-            else:
-                y,x = int(coord[1:])-1, ord(coord[0])-65
-                allignment = input("Vertical or Horizontal: ").lower()
-                if allignment == "vertical":
-                    for j in range(i.length):
-                        self.board[y-j][x] = "S"
-                        i.coordinates.append([y-j,x])
-                elif allignment == "horizontal":
-                    for j in range(i.length):
-                        self.board[y][x+j] = "S"
-                        i.coordinates.append([y,x+j])
-                for row in self.board:
-                    for i in range(12):
-                        if i != 11:
-                            print(row[i], end=" ")
-                        else:
-                            print(row[i])
+    def placeShip(self,ship,y,x,allignment):
+        print(allignment)
+        if allignment.lower() == "v":
+            for j in range(ship.length):
+                self.board[y-j][x] = "S"
+                ship.coordinates.append([y-j,x])
+        elif allignment.lower() == "h":
+            for j in range(ship.length):
+                self.board[y][x+j] = "S"
+                ship.coordinates.append([y,x+j])
     def usePowerUp(self):
         x = input("Do you want to use a power up? (Y/N) ").lower()
         if x == "y":
