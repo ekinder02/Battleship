@@ -1,4 +1,4 @@
-import pygame
+
 import player
 player1 = player.Player([],[],100,1,[],[])
 player1.createCleanBoard()
