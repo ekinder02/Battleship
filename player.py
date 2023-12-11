@@ -21,13 +21,13 @@ class Player:
         #self.shipList.append(ship.Ship(3,3,[]))
         #self.shipList.append(ship.Ship(3,3,[]))
         #self.shipList.append(ship.Ship(2,2,[]))
-    def placeShip(self,ship,y,x):
-        allignment = input("Vertical or Horizontal: ").lower()
-        if allignment == "vertical":
+    def placeShip(self,ship,y,x,allignment):
+        print(allignment)
+        if allignment.lower() == "v":
             for j in range(ship.length):
                 self.board[y-j][x] = "S"
                 ship.coordinates.append([y-j,x])
-        elif allignment == "horizontal":
+        elif allignment.lower() == "h":
             for j in range(ship.length):
                 self.board[y][x+j] = "S"
                 ship.coordinates.append([y,x+j])

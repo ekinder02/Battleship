@@ -50,7 +50,7 @@ class GameManager(Widget):
                         size = (100, 100),
                         pos = (0,0),
                     )
-        placeButton.bind(on_press = lambda x: player.placeShip(player.shipList[0],int(shipLabel.text[1:])-1,ord(shipLabel.text[0])-65))
+        placeButton.bind(on_press = lambda x: player.placeShip(player.shipList[0],int(shipLabel.text[1:shipLabel.text.index(" ")])-1,ord(shipLabel.text[0])-65,shipLabel.text[shipLabel.text.index(" ")+1:]))
         layout.add_widget(placeButton)
         layout.add_widget(shipLabel)
         self.add_widget(layout)
