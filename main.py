@@ -5,6 +5,7 @@ player1.createCleanBoard()
 player1.createShipList()
 player2 = player.Player([],[],100,2,[],[])
 player2.createCleanBoard()
+player2.createShipList()
 
 from kivy.uix.textinput import TextInput
 from kivy.app import App
@@ -37,12 +38,17 @@ class GameManager(Widget):
 
     def startGame(self):
         self.makeBoard(player1)
-        self.takeInput(player1)
-        self.makeFiringBoard(player1)
-        self.placeShip(player1)
+        self.placeShip()
         self.backgroundImageButton()
         global playerTurn
+        global currentPlayer
+        global showBackground
+        global placePhase
+        placePhase = True
+        showBackground = True
         playerTurn = 1
+        currentPlayer = player1
+        self.clock = Clock.schedule_interval(self.update, 1.0/360.0)
 
     def backgroundImageButton(self):
         self.backgroundImage = Button(text ="", size = (2000, 1000),
@@ -50,13 +56,18 @@ class GameManager(Widget):
                      size_hint = (2000, 1000),
                      pos_hint = {"x":100, "y":100}
                    )
-        self.backgroundImage.bind(on_press = lambda x: self.remove_widget(self.backgroundImage))
+        self.backgroundImage.bind(on_press = lambda x: self.clickedBackground(self.backgroundImage))
         self.add_widget(self.backgroundImage)
-        
-
     
-    def placeShip(self,player):
-        layout = GridLayout(cols = 1, rows = 2,size = (200, 200), pos = (500,200))
+    def clickedBackground(self,btn):
+        global showBackground
+        self.remove_widget(btn)
+        showBackground = False
+        
+        
+    def placeShip(self):
+        global placeShipLayout
+        placeShipLayout = GridLayout(cols = 1, rows = 2,size = (200, 200), pos = (500,200))
         shipLabel = TextInput(font_size = 50, 
                       size_hint_y = None, 
                       height = 100)
@@ -65,10 +76,11 @@ class GameManager(Widget):
                         size = (100, 100),
                         pos = (0,0),
                     )
-        placeButton.bind(on_press = lambda x: player.placeShip(player.shipList[0],int(shipLabel.text[1:shipLabel.text.index(" ")])-1,ord(shipLabel.text[0])-65,shipLabel.text[shipLabel.text.index(" ")+1:]))
-        layout.add_widget(placeButton)
-        layout.add_widget(shipLabel)
-        self.add_widget(layout)
+        global currentPlayer
+        placeButton.bind(on_press = lambda x: currentPlayer.placeShip(currentPlayer.shipList[0],int(shipLabel.text[1:shipLabel.text.index(" ")])-1,ord(shipLabel.text[0])-65,shipLabel.text[shipLabel.text.index(" ")+1:]))
+        placeShipLayout.add_widget(placeButton)
+        placeShipLayout.add_widget(shipLabel)
+        self.add_widget(placeShipLayout)
     
     def makeBoard(self,player):
         global layout
@@ -145,33 +157,53 @@ class GameManager(Widget):
                         pos = (0,0),
                     )
         
-        btn.bind(on_press = lambda x: player.shootMissileParam(player2,int(t.text[1:])-1,ord(t.text[0])-65))
+        if currentPlayer == player1:
+            btn.bind(on_press = lambda x: player1.shootMissileParam(player2,int(t.text[1:])-1,ord(t.text[0])-65))
+        elif currentPlayer == player2:
+            btn.bind(on_press = lambda x: player2.shootMissileParam(player1,int(t.text[1:])-1,ord(t.text[0])-65))
         btn.bind(on_release = lambda x: self.release())
         layout.add_widget(btn)
         layout.add_widget(t)
         self.add_widget(layout)
     
     def release(self):
+        global currentPlayer
         global playerTurn
         global btn
         global firingLayout
-        print("playerTurn: ",playerTurn)
-        if playerTurn == 1:
-            layout.clear_widgets()
-            firingLayout.clear_widgets()
-            self.makeBoard(player2)
-            self.makeFiringBoard(player2)
+        if playerTurn == player1:
             btn.bind(on_press = lambda x: player2.shootMissileParam(player1,int(t.text[1:])-1,ord(t.text[0])-65))
-            playerTurn = 2
-        elif playerTurn == 2:
+            currentPlayer = player2
+        elif playerTurn == player2:
+            btn.bind(on_press = lambda x: player1.shootMissileParam(player2,int(t.text[1:])-1,ord(t.text[0])-65))
+            currentPlayer = player1
+    
+    def update(self,ndt):
+        global currentPlayer
+        global showBackground
+        global placePhase
+        global playerTurn
+        if showBackground == False and placePhase == True:
+            layout.clear_widgets()
+            self.makeBoard(currentPlayer)
+        if placePhase == False:
             layout.clear_widgets()
             firingLayout.clear_widgets()
-            self.makeBoard(player1)
-            self.makeFiringBoard(player1)
-            btn.bind(on_press = lambda x: player1.shootMissileParam(player2,int(t.text[1:])-1,ord(t.text[0])-65))
-            playerTurn = 1
-    
-    # def update(self,ndt):
+            self.makeBoard(currentPlayer)
+            self.makeFiringBoard(currentPlayer)
+            if currentPlayer!= playerTurn:
+                self.takeInput(currentPlayer)
+            playerTurn = currentPlayer
+        if player1.shipList == [] and player2.shipList != [] and currentPlayer == player1 and placePhase == True:
+            currentPlayer = player2
+        elif player2.shipList == [] and placePhase == True:
+            currentPlayer = player1
+            placePhase = False
+            self.makeBoard(currentPlayer)
+            self.makeFiringBoard(currentPlayer)
+            self.remove_widget(placeShipLayout)
+            self.takeInput(currentPlayer)
+            
         
                     
         
