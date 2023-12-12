@@ -1,10 +1,10 @@
+
 import player
 player1 = player.Player([],[],100,1,[],[])
 player1.createCleanBoard()
 player1.createShipList()
 player2 = player.Player([],[],100,2,[],[])
 player2.createCleanBoard()
-player2.createShipList()
 
 from kivy.uix.textinput import TextInput
 from kivy.app import App
@@ -30,7 +30,7 @@ class BattleshipApp(App):
         Window.resizable = True
         game = GameManager()
         return game
-    
+
 class GameManager(Widget):
     def __init__(self, **args):
         super(GameManager, self).__init__(**args)
@@ -115,15 +115,16 @@ class GameManager(Widget):
         self.backgroundImage.bind(on_press = lambda x: self.clickedBackground(self.backgroundImage))
         self.add_widget(self.backgroundImage)
     
-    def clickedBackground(self,btn):
-        global showBackground
-        self.remove_widget(btn)
-        showBackground = False
-        
-    def placeShip(self):
-        global placeShipLayout
-        global placeShipLabel
-        placeShipLayout = GridLayout(cols = 1, rows = 2,size = (150, 200), pos = (550,200))
+    def startGame(self):
+        self.makeBoard(player1)
+        self.takeInput(player1)
+        self.makeFiringBoard(player1)
+        self.placeShip(player1)
+        global playerTurn
+        playerTurn = 1
+    
+    def placeShip(self,player):
+        layout = GridLayout(cols = 1, rows = 2,size = (200, 200), pos = (500,200))
         shipLabel = TextInput(font_size = 50, 
                       size_hint_y = None, 
                       height = 100)
@@ -132,11 +133,10 @@ class GameManager(Widget):
                         size = (100, 100),
                         pos = (0,0),
                     )
-        global currentPlayer
-        placeButton.bind(on_press = lambda x: currentPlayer.placeShip(shipLabel.text,currentPlayer.shipList[0],placeShipLabel,errorBox))
-        placeShipLayout.add_widget(placeButton)
-        placeShipLayout.add_widget(shipLabel)
-        self.add_widget(placeShipLayout)
+        placeButton.bind(on_press = lambda x: player.placeShip(player.shipList[0],int(shipLabel.text[1:shipLabel.text.index(" ")])-1,ord(shipLabel.text[0])-65,shipLabel.text[shipLabel.text.index(" ")+1:]))
+        layout.add_widget(placeButton)
+        layout.add_widget(shipLabel)
+        self.add_widget(layout)
     
     def makeBoard(self,player):
         global layout
@@ -167,16 +167,6 @@ class GameManager(Widget):
                         size = (100, 100),
                         pos = (0,0),
                     ))
-        labelLayoutY = GridLayout(cols = 12, rows = 1,size = (500, 500), pos = (0,275))
-        letters = ["A","B","C","D","E","F","G","H","I","J","K","L"]
-        for i in letters:
-            labelLayoutY.add_widget(Label(text = i, font_size = 32))
-        
-        labelLayoutX = GridLayout(cols = 1, rows = 12,size = (500, 500), pos = (275,0))
-        for i in range(12):
-            labelLayoutX.add_widget(Label(text = str(i+1), font_size = 32)) 
-        self.add_widget(labelLayoutY)
-        self.add_widget(labelLayoutX)
         self.add_widget(layout)
     
     def makeFiringBoard(self,player):
@@ -208,21 +198,10 @@ class GameManager(Widget):
                         size = (100, 100),
                         pos = (0,0),
                     ))
-        
-        labelLayoutY = GridLayout(cols = 12, rows = 1,size = (500, 500), pos = (700,275))
-        letters = ["A","B","C","D","E","F","G","H","I","J","K","L"]
-        for i in letters:
-            labelLayoutY.add_widget(Label(text = i, font_size = 32))
-        
-        labelLayoutX = GridLayout(cols = 1, rows = 12,size = (500, 500), pos = (975,0))
-        for i in range(12):
-            labelLayoutX.add_widget(Label(text = str(i+1), font_size = 32)) 
-        self.add_widget(labelLayoutY)
-        self.add_widget(labelLayoutX)
         self.add_widget(firingLayout)
     
     def takeInput(self,player):
-        layout = GridLayout(cols = 1, rows = 2,size = (150, 200), pos = (550,200))
+        layout = GridLayout(cols = 1, rows = 2,size = (200, 200), pos = (500,0))
         global t
         t = TextInput(font_size = 50, 
                       size_hint_y = None, 
@@ -384,6 +363,8 @@ class GameManager(Widget):
             
 root = BattleshipApp() 
 root.run()
+
+
 
 '''def main():
     for i in player1.board:
