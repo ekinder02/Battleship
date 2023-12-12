@@ -21,9 +21,13 @@ from kivy.uix.label import Label
 import time
 from functools import partial
 from kivy.uix.progressbar import ProgressBar
+from kivy.core.window import Window
+
 
 class BattleshipApp(App): 
     def build(self):
+        # Window.size = (1000, 920)
+        Window.resizable = True
         game = GameManager()
         return game
     
@@ -37,6 +41,10 @@ class GameManager(Widget):
         global currentPlayer
         global showBackground
         global placePhase
+        global press2
+        global press1
+        press1 = lambda x: player1.shootMissileParam(player2,t.text)
+        press2 = lambda x: player2.shootMissileParam(player1,t.text)
         placePhase = True
         showBackground = True
         playerTurn = 1
@@ -227,15 +235,16 @@ class GameManager(Widget):
                     )
         
         if currentPlayer == player1:
-            btn.bind(on_press = lambda x: player1.shootMissileParam(player2,t.text))
+            btn.bind(on_press = press1)
         elif currentPlayer == player2:
-            btn.bind(on_press = lambda x: player2.shootMissileParam(player1,t.text))
+            btn.bind(on_press = press2)
         btn.bind(on_release = lambda x: self.release())
         layout.add_widget(btn)
         layout.add_widget(t)
         self.add_widget(layout)
     
     def release(self):
+        print("released")
         global currentPlayer
         global playerTurn
         global btn
@@ -243,23 +252,19 @@ class GameManager(Widget):
         global mainLabel
         global showBackground
         if playerTurn == player1:
-            btn.bind(on_press = lambda x: player2.shootMissileParam(player1,int(t.text[1:])-1,ord(t.text[0])-65))
-            currentPlayer = player2
-            layout.clear_widgets()
+            self.updateInput()
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
-            firingLayout.clear_widgets()
-            self.makeBoard(currentPlayer)
-            self.makeFiringBoard(currentPlayer)
+            currentPlayer = player2
+            self.updateFiringBoard(currentPlayer)
+            self.updateMyBoard(currentPlayer)
             self.backgroundImageButton()
             showBackground = True
         elif playerTurn == player2:
-            btn.bind(on_press = lambda x: player1.shootMissileParam(player2,int(t.text[1:])-1,ord(t.text[0])-65))
-            currentPlayer = player1
-            layout.clear_widgets()
+            self.updateInput()
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
-            firingLayout.clear_widgets()
-            self.makeBoard(currentPlayer)
-            self.makeFiringBoard(currentPlayer)
+            currentPlayer = player1
+            self.updateFiringBoard(currentPlayer)
+            self.updateMyBoard(currentPlayer)
             self.backgroundImageButton()
             showBackground = True
             
@@ -279,6 +284,77 @@ class GameManager(Widget):
         global errorBox
         errorBox = Label(text = "", font_size = 50, pos = (550, 570))
         self.add_widget(errorBox)
+    def updateMyBoard(self,player):
+        global layout
+        layout.clear_widgets()
+        for y,row in enumerate(player.board):
+            for x,cell in enumerate(row):
+                if cell == "-":
+                    layout.add_widget(Button(text ="",
+                        background_color =(1, 1, 1, 1),
+                        size = (100, 100),
+                        pos = (0,0),
+                    ))
+                elif cell == "S":
+                    layout.add_widget(Button(text ="",
+                        background_color =(1, 1, 255, 1),
+                        size = (100, 100),
+                        pos = (0,0),
+                    ))
+                elif cell == "M":
+                    layout.add_widget(Button(text ="",
+                        background_color =(255, 255, 255, 1),
+                        size = (100, 100),
+                        pos = (0,0),
+                    ))
+                elif cell == "H":
+                    layout.add_widget(Button(text ="",
+                        background_color =(255, 1, 1, 1),
+                        size = (100, 100),
+                        pos = (0,0),
+                    ))
+        
+    def updateFiringBoard(self,player):
+        global firingLayout
+        firingLayout.clear_widgets()
+        for y,row in enumerate(player.firingBoard):
+            for x,cell in enumerate(row):
+                if cell == "-":
+                    firingLayout.add_widget(Button(text ="",
+                        background_color =(1, 1, 1, 1),
+                        size = (100, 100),
+                        pos = (0,0),
+                    ))
+                elif cell == "S":
+                    firingLayout.add_widget(Button(text ="",
+                        background_color =(1, 1, 255, 1),
+                        size = (100, 100),
+                        pos = (0,0),
+                    ))
+                elif cell == "M":
+                    firingLayout.add_widget(Button(text ="",
+                        background_color =(255, 255, 255, 1),
+                        size = (100, 100),
+                        pos = (0,0),
+                    ))
+                elif cell == "H":
+                    firingLayout.add_widget(Button(text ="",
+                        background_color =(255, 1, 1, 1),
+                        size = (100, 100),
+                        pos = (0,0),
+                    ))
+    
+    def updateInput(self):
+        global btn
+        global currentPlayer
+        if currentPlayer == player1:
+            btn.unbind(on_press = press1)
+            btn.bind(on_press = press2)
+            print("hello")
+        elif currentPlayer == player2:
+            btn.unbind(on_press = press2)
+            btn.bind(on_press = press1)
+            print("bye")
     def update(self,ndt):
         global currentPlayer
         global showBackground
@@ -286,18 +362,10 @@ class GameManager(Widget):
         global playerTurn
         global instruct
         if showBackground == False and placePhase == True:
-            layout.clear_widgets()
-            self.makeBoard(currentPlayer)
+            self.updateMyBoard(currentPlayer)
         if placePhase == False and showBackground == False:
-            layout.clear_widgets()
-            firingLayout.clear_widgets()
-            self.makeBoard(currentPlayer)
-            self.makeFiringBoard(currentPlayer)
             global cash
             self.make_shop(currentPlayer)
-            self.remove_widget(cash)
-            if currentPlayer!= playerTurn:
-                self.takeInput(currentPlayer)
             playerTurn = currentPlayer
         if player1.shipList == [] and player2.shipList != [] and currentPlayer == player1 and placePhase == True:
             currentPlayer = player2

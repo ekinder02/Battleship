@@ -119,6 +119,7 @@ class Player:
                             print(row[i])
     
     def shootMissileParam(self,enemy,inp):
+        print("shot on " + str(enemy.number))
         if inp[0] not in "ABCDEFGHIJKL" or inp[1:] not in "123456789101112":
             print("Invalid input! Try again")
             return ()
