@@ -26,15 +26,12 @@ class Player:
             return ()
         if len(place)!= 4 and len(place) != 5:
             error.text = "Invalid input! Replace ship"
-            print("1")
             return ()
         if place[0].upper() not in "ABCDEFGHIJKL" or place[1:3].replace(" ","") not in "123456789101112":
             error.text = "Invalid input! Replace ship"
-            print(place[0])
             return ()
         if place[place.index(" ")+1:].lower() not in "vh":
             error.text = "Invalid input! Replace ship"
-            print("3")
             return ()
         y = int(place[1:place.index(" ")])-1
         x = ord(place[0])-65
@@ -119,7 +116,6 @@ class Player:
                             print(row[i])
     
     def shootMissileParam(self,enemy,inp):
-        print("shot on " + str(enemy.number))
         if inp[0] not in "ABCDEFGHIJKL" or inp[1:] not in "123456789101112":
             print("Invalid input! Try again")
             return ()

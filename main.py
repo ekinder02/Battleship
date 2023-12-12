@@ -59,7 +59,7 @@ class GameManager(Widget):
         self.clock = Clock.schedule_interval(self.update, 1.0/360.0)
 
     def make_shop(self, player):
-        layout = GridLayout(cols = 3, rows = 5,size = (200, 200), pos = (100,750))
+        layout = GridLayout(cols = 3, rows = 5,size = (200, 200), pos = (1300,750))
         btns = []
         btn1 = Button(text = "2x2", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn2 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
@@ -101,10 +101,14 @@ class GameManager(Widget):
 
 
         global cash       
-        cash = Label(text = "Cash: " + str(player.cash), font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (150, 670))
+        cash = Label(text = "Cash: " + str(player.cash), font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (1300, 670))
 
         self.add_widget(cash)
         self.add_widget(layout)
+        
+    def updateCash(self,player):
+        global cash
+        cash.text = "Cash: " + str(player.cash)
 
     def backgroundImageButton(self):
         self.backgroundImage = Button(text ="", size = (2000, 1000),
@@ -257,6 +261,7 @@ class GameManager(Widget):
             currentPlayer = player2
             self.updateFiringBoard(currentPlayer)
             self.updateMyBoard(currentPlayer)
+            self.updateCash(currentPlayer)
             self.backgroundImageButton()
             showBackground = True
         elif playerTurn == player2:
@@ -265,6 +270,7 @@ class GameManager(Widget):
             currentPlayer = player1
             self.updateFiringBoard(currentPlayer)
             self.updateMyBoard(currentPlayer)
+            self.updateCash(currentPlayer)
             self.backgroundImageButton()
             showBackground = True
             
@@ -364,8 +370,6 @@ class GameManager(Widget):
         if showBackground == False and placePhase == True:
             self.updateMyBoard(currentPlayer)
         if placePhase == False and showBackground == False:
-            global cash
-            self.make_shop(currentPlayer)
             playerTurn = currentPlayer
         if player1.shipList == [] and player2.shipList != [] and currentPlayer == player1 and placePhase == True:
             currentPlayer = player2
@@ -378,6 +382,7 @@ class GameManager(Widget):
             self.makeBoard(currentPlayer)
             self.makeFiringBoard(currentPlayer)
             self.remove_widget(placeShipLayout)
+            self.make_shop(currentPlayer)
             self.takeInput(currentPlayer)
             instruct.text = "To fire, input the spot [A1].\nThis will be the spot you fire at."
             self.remove_widget(placeShipLabel)
