@@ -59,7 +59,7 @@ class GameManager(Widget):
         self.clock = Clock.schedule_interval(self.update, 1.0/360.0)
 
     def make_shop(self, player):
-        layout = GridLayout(cols = 3, rows = 5,size = (200, 200), pos = (1300,750))
+        layout = GridLayout(cols = 3, rows = 5,size = (400, 200), pos = (1300,750))
         btns = []
         btn1 = Button(text = "2x2", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn2 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
