@@ -46,6 +46,7 @@ class GameManager(Widget):
         self.placeShipText()
         self.label()
         self.instructions()
+        self.errorBox()
         self.backgroundImageButton()
         self.clock = Clock.schedule_interval(self.update, 1.0/360.0)
 
@@ -124,7 +125,7 @@ class GameManager(Widget):
                         pos = (0,0),
                     )
         global currentPlayer
-        placeButton.bind(on_press = lambda x: currentPlayer.placeShip(currentPlayer.shipList[0],int(shipLabel.text[1:shipLabel.text.index(" ")])-1,ord(shipLabel.text[0])-65,shipLabel.text[shipLabel.text.index(" ")+1:],placeShipLabel))
+        placeButton.bind(on_press = lambda x: currentPlayer.placeShip(shipLabel.text,currentPlayer.shipList[0],placeShipLabel,errorBox))
         placeShipLayout.add_widget(placeButton)
         placeShipLayout.add_widget(shipLabel)
         self.add_widget(placeShipLayout)
@@ -226,9 +227,9 @@ class GameManager(Widget):
                     )
         
         if currentPlayer == player1:
-            btn.bind(on_press = lambda x: player1.shootMissileParam(player2,int(t.text[1:])-1,ord(t.text[0])-65))
+            btn.bind(on_press = lambda x: player1.shootMissileParam(player2,t.text))
         elif currentPlayer == player2:
-            btn.bind(on_press = lambda x: player2.shootMissileParam(player1,int(t.text[1:])-1,ord(t.text[0])-65))
+            btn.bind(on_press = lambda x: player2.shootMissileParam(player1,t.text))
         btn.bind(on_release = lambda x: self.release())
         layout.add_widget(btn)
         layout.add_widget(t)
@@ -274,7 +275,10 @@ class GameManager(Widget):
         global placeShipLabel
         placeShipLabel = Label(text = f"Place your {currentPlayer.shipList[0].length} long ship", font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (750, 470))
         self.add_widget(placeShipLabel)
-        
+    def errorBox(self):
+        global errorBox
+        errorBox = Label(text = "", font_size = 50, pos = (550, 570))
+        self.add_widget(errorBox)
     def update(self,ndt):
         global currentPlayer
         global showBackground

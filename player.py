@@ -21,18 +21,48 @@ class Player:
         #self.shipList.append(ship.Ship(3,3,[]))
         #self.shipList.append(ship.Ship(3,3,[]))
         #self.shipList.append(ship.Ship(2,2,[]))
-    def placeShip(self,ship,y,x,allignment,placeShipLabel):
+    def placeShip(self,place,ship,placeShipLabel,error):
         if ship == None:
             return ()
+        if len(place)!= 4 and len(place) != 5:
+            error.text = "Invalid input! Replace ship"
+            print("1")
+            return ()
+        if place[0].upper() not in "ABCDEFGHIJKL" or place[1:3].replace(" ","") not in "123456789101112":
+            error.text = "Invalid input! Replace ship"
+            print(place[0])
+            return ()
+        if place[place.index(" ")+1:].lower() not in "vh":
+            error.text = "Invalid input! Replace ship"
+            print("3")
+            return ()
+        y = int(place[1:place.index(" ")])-1
+        x = ord(place[0])-65
+        allignment = place[place.index(" ")+1:]
         if allignment.lower() == "v":
+            if y-ship.length < 0:
+                error.text = "Ship out of bounds! Replace ship"
+                return ()
+            for i in range(ship.length):
+                if self.board[y-i][x] == "S":
+                    error.text = "Ship overlapping! Replace ship"
+                    return ()
             for j in range(ship.length):
                 self.board[y-j][x] = "S"
                 ship.coordinates.append([y-j,x])
         elif allignment.lower() == "h":
+            if x+ship.length > 12:
+                error.text = "Ship out of bounds! Replace ship"
+                return ()
+            for i in range(ship.length):
+                if self.board[y][x+i] == "S":
+                    error.text = "Ship overlapping! Replace ship"
+                    return ()
             for j in range(ship.length):
                 self.board[y][x+j] = "S"
                 ship.coordinates.append([y,x+j])
         self.shipList.remove(ship)
+        error.text = ""
         if self.shipList != []:
             placeShipLabel.text = "Place your " + str(self.shipList[0].length) + " length ship"
     def usePowerUp(self):
@@ -88,7 +118,15 @@ class Player:
                         else:
                             print(row[i])
     
-    def shootMissileParam(self, enemy,y,x):
+    def shootMissileParam(self,enemy,inp):
+        if inp[0] not in "ABCDEFGHIJKL" or inp[1:] not in "123456789101112":
+            print("Invalid input! Try again")
+            return ()
+        if len(inp) != 2:
+            print("Invalid input! Try again")
+            return ()
+        y = int(inp[1:])-1
+        x = ord(inp[0])-65
         if enemy.board[y][x] == "S":
             self.firingBoard[y][x] = "H"
             enemy.board[y][x] = "H"
