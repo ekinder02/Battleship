@@ -307,7 +307,8 @@ class Player:
     def useUAV(self,enemy):
         if self.powerUps.count("UAV") == 0:
             return()
-        choice = input("Which row[1]/column[A] do you want to reveal? ").upper()
+        choices = ["A","B","C","D","E","F","G","H","I","J","K","L","1","2","3","4","5","6","7","8","9","10","11","12"]
+        choice = random.choice(choices)
         if choice.isdigit():
             y = int(choice)-1
             for x,v in enumerate(enemy.board):
@@ -325,13 +326,7 @@ class Player:
                             self.firingBoard[x][y] = "S"
                         if j == "-":
                             self.firingBoard[x][y] = "M"
-                            
-        for row in self.firingBoard:
-                for i in range(12):
-                    if i != 11:
-                        print(row[i], end=" ")
-                    else:
-                        print(row[i])
+
         self.powerUps.remove("UAV")
     def useTwoMoves(self, enemy):
         self.shootMissile(enemy)

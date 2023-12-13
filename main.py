@@ -142,6 +142,8 @@ class GameManager(Widget):
         btn6 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn6.bind(on_press = lambda x: player.buyAirstrike(cash,errorBox))
         btn7 = Button(text = "UAV", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn7.bind(on_press = lambda x: player.useUAV(enemy))
+        btn7.bind(on_release = lambda x: self.release())
         btn8 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn9 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn9.bind(on_press = lambda x: player.buyUAV(cash,errorBox))
