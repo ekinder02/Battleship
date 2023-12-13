@@ -44,10 +44,14 @@ class GameManager(Widget):
         global press2
         global press1
         global errorBox
+        global player1ExtraTurn
+        global player2ExtraTurn
         press1 = lambda x: player1.shootMissileParam(player2,t.text,errorBox)
         press2 = lambda x: player2.shootMissileParam(player1,t.text,errorBox)
         placePhase = True
         showBackground = True
+        player1ExtraTurn = 0
+        player2ExtraTurn = 0
         playerTurn = 1
         currentPlayer = player1
         self.makeBoard(player1)
@@ -64,6 +68,16 @@ class GameManager(Widget):
         global errorBox
         global enemy
         global btn
+        global btn1
+        global btn3
+        global btn4
+        global btn6
+        global btn7
+        global btn9
+        global btn10
+        global btn12
+        global btn13
+        global btn15
         cash = Label(text = "Cash: " + str(player.cash), font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (1300, 670))
 
         self.add_widget(cash)
@@ -71,22 +85,22 @@ class GameManager(Widget):
         layout = GridLayout(cols = 3, rows = 5,size = (400, 200), pos = (1300,750))
         btns = []
         btn1 = Button(text = "2x2", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn1.bind(on_press = lambda x: currentPlayer.use2x2(enemy,t.text,errorBox))
+        btn1.bind(on_press = lambda x: player1.use2x2(enemy,t.text,errorBox))
         btn1.bind(on_release = lambda x: self.release())
         btn2 = Button(text = "Price: 10", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn3 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn3.bind(on_press = lambda x: player.buy2x2(cash,errorBox))
+        btn3.bind(on_press = lambda x: player1.buy2x2(cash,errorBox))
         btn4 = Button(text = "Air Strike", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn4.bind(on_press = lambda x: player.useAirstrike(enemy))
         btn5 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn6 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn6.bind(on_press = lambda x: player.buyAirstrike(cash,errorBox))
-        btn6.bind(on_release = lambda x: btn4.background_color(255, 1, 1, 1))
         btn7 = Button(text = "UAV", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn8 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn9 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn9.bind(on_press = lambda x: player.buyUAV(cash,errorBox))
         btn10 = Button(text = "2 Moves", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn10.bind(on_press = lambda x: self.getExtraMove())
         btn11 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn12 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn12.bind(on_press = lambda x: player.buyTwoMoves(cash,errorBox))
@@ -117,6 +131,60 @@ class GameManager(Widget):
     def updateCash(self,player):
         global cash
         cash.text = "Cash: " + str(player.cash)
+    
+    def getExtraMove(self):
+        if currentPlayer == player1:
+            global player1ExtraTurn
+            player1ExtraTurn += 1
+        elif currentPlayer == player2:
+            global player2ExtraTurn
+            player2ExtraTurn += 1
+            
+    def updatePowerBinds(self):
+        print("updatePowerBinds")
+        if currentPlayer == player1:
+            btn1.unbind(on_press = lambda x: player2.use2x2(enemy,t.text,errorBox))
+            btn1.bind(on_press = lambda x: player1.use2x2(enemy,t.text,errorBox))
+            btn3.unbind(on_press = lambda x: player2.buy2x2(cash,errorBox))
+            btn3.bind(on_press = lambda x: player1.buy2x2(cash,errorBox))
+            btn4.unbind(on_press = lambda x: player2.useAirstrike(enemy))
+            btn4.bind(on_press = lambda x: player1.useAirstrike(enemy))
+            btn6.unbind(on_press = lambda x: player2.buyAirstrike(cash,errorBox))
+            btn6.bind(on_press = lambda x: player1.buyAirstrike(cash,errorBox))
+            btn7.unbind(on_press = lambda x: player2.buyUAV(cash,errorBox))
+            btn7.bind(on_press = lambda x: player1.buyUAV(cash,errorBox))
+            btn9.unbind(on_press = lambda x: player2.buyTwoMoves(cash,errorBox))
+            btn9.bind(on_press = lambda x: player1.buyTwoMoves(cash,errorBox))
+            btn10.unbind(on_press = lambda x: player2.buyXHit(cash,errorBox))
+            btn10.bind(on_press = lambda x: player1.buyXHit(cash,errorBox))
+            btn12.unbind(on_press = lambda x: player2.buyTwoMoves(cash,errorBox))
+            btn12.bind(on_press = lambda x: player1.buyTwoMoves(cash,errorBox))
+            btn13.unbind(on_press = lambda x: player2.buyXHit(cash,errorBox))
+            btn13.bind(on_press = lambda x: player1.buyXHit(cash,errorBox))
+            btn15.unbind(on_press = lambda x: player2.buyXHit(cash,errorBox))
+            btn15.bind(on_press = lambda x: player1.buyXHit(cash,errorBox))
+        elif currentPlayer == player2:
+            btn1.unbind(on_press = lambda x: player1.use2x2(enemy,t.text,errorBox))
+            btn1.bind(on_press = lambda x: player2.use2x2(enemy,t.text,errorBox))
+            btn3.unbind(on_press = lambda x: player1.buy2x2(cash,errorBox))
+            btn3.bind(on_press = lambda x: player2.buy2x2(cash,errorBox))
+            btn4.unbind(on_press = lambda x: player1.useAirstrike(enemy))
+            btn4.bind(on_press = lambda x: player2.useAirstrike(enemy))
+            btn6.unbind(on_press = lambda x: player1.buyAirstrike(cash,errorBox))
+            btn6.bind(on_press = lambda x: player2.buyAirstrike(cash,errorBox))
+            btn7.unbind(on_press = lambda x: player1.buyUAV(cash,errorBox))
+            btn7.bind(on_press = lambda x: player2.buyUAV(cash,errorBox))
+            btn9.unbind(on_press = lambda x: player1.buyTwoMoves(cash,errorBox))
+            btn9.bind(on_press = lambda x: player2.buyTwoMoves(cash,errorBox))
+            btn10.unbind(on_press = lambda x: player1.buyXHit(cash,errorBox))
+            btn10.bind(on_press = lambda x: player2.buyXHit(cash,errorBox))
+            btn12.unbind(on_press = lambda x: player1.buyTwoMoves(cash,errorBox))
+            btn12.bind(on_press = lambda x: player2.buyTwoMoves(cash,errorBox))
+            btn13.unbind(on_press = lambda x: player1.buyXHit(cash,errorBox))
+            btn13.bind(on_press = lambda x: player2.buyXHit(cash,errorBox))
+            btn15.unbind(on_press = lambda x: player1.buyXHit(cash,errorBox))
+            btn15.bind(on_press = lambda x: player2.buyXHit(cash,errorBox))
+            
 
     def backgroundImageButton(self):
         self.backgroundImage = Button(text ="", size = (2000, 1000),
@@ -264,27 +332,44 @@ class GameManager(Widget):
         global mainLabel
         global enemy
         global showBackground
-        if playerTurn == player1:
+        global player1ExtraTurn
+        global player2ExtraTurn
+        if player1ExtraTurn > 0:
+            player1ExtraTurn -= 1
+            self.updateFiringBoard(currentPlayer)
+            self.updateMyBoard(currentPlayer)
+            self.updateCash(currentPlayer)
+            return()
+        elif playerTurn == player1:
+            print(player1ExtraTurn)
             self.updateInput()
             enemy = player2
-            mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             currentPlayer = player2
+            mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             enemy = player1
             self.updateFiringBoard(currentPlayer)
             self.updateMyBoard(currentPlayer)
             self.updateCash(currentPlayer)
             self.backgroundImageButton()
+            self.updatePowerBinds()
             showBackground = True
+        elif player2ExtraTurn > 0:
+                player2ExtraTurn -= 1
+                self.updateFiringBoard(currentPlayer)
+                self.updateMyBoard(currentPlayer)
+                self.updateCash(currentPlayer)
+                return()
         elif playerTurn == player2:
             self.updateInput()
             enemy = player1
-            mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             currentPlayer = player1
+            mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             enemy = player2
             self.updateFiringBoard(currentPlayer)
             self.updateMyBoard(currentPlayer)
             self.updateCash(currentPlayer)
             self.backgroundImageButton()
+            self.updatePowerBinds()
             showBackground = True
             
     def label(self):
@@ -369,11 +454,9 @@ class GameManager(Widget):
         if currentPlayer == player1:
             btn.unbind(on_press = press1)
             btn.bind(on_press = press2)
-            print("hello")
         elif currentPlayer == player2:
             btn.unbind(on_press = press2)
             btn.bind(on_press = press1)
-            print("bye")
     def update(self,ndt):
         global currentPlayer
         global showBackground

@@ -158,8 +158,6 @@ class Player:
         print("2x2 -> 10 cash")
         print("UAV -> 25 cash")
         print("Airstrike -> 50 cash")
-        print("Boat Upgrade -> 50 cash")
-        print("Move Boat -> 50 cash")
         print("Two Moves -> 50 cash")
         print("X Hit -> 50 cash")
 
@@ -172,10 +170,6 @@ class Player:
                 self.buyUAV()
             elif x == "airstrike":
                 self.buyAirstrike()
-            elif x == "boat upgrade":
-                self.buyBoatUpgrade()
-            elif x == "move boat":
-                self.buyMoveBoat()
             elif x == "two moves":
                 self.buyTwoMoves()
             elif x == "x hit":
@@ -218,26 +212,9 @@ class Player:
             print("Airstrike power up bought!")
             error.text = "Airstrike power up bought!"
         cash.text = "Cash: " + str(self.cash)
-
-    def buyBoatUpgrade(self):
-        if self.cash < 50:
-            print("Not enough cash!")
-            return False
-        else:
-            self.cash -= 50
-            self.powerUps.append("Boat Upgrade")
-            print("Boat Upgrade power up bought!")
-    
-    def buyMoveBoat(self):
-        if self.cash < 50:
-            print("Not enough cash!")
-            return False
-        else:
-            self.cash -= 50
-            self.powerUps.append("Move Boat")
-            print("Move Boat power up bought!")
     
     def buyTwoMoves(self,cash,error):
+        print(self.cash,self.number)
         if self.cash < 50:
             print("Not enough cash!")
             error.text = "Not enough cash!"
