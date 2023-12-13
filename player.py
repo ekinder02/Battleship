@@ -116,12 +116,14 @@ class Player:
                         else:
                             print(row[i])
     
-    def shootMissileParam(self,enemy,inp):
+    def shootMissileParam(self,enemy,inp,error):
         if inp[0].upper() not in "ABCDEFGHIJKL" or inp[1:] not in "123456789101112":
             print("Invalid input! Try again")
+            error.text = "Invalid input! Try again"
             return ()
         if len(inp) != 2 and len(inp) != 3:
             print("Invalid input! Try again")
+            error.text = "Invalid input! Try again"
             return ()
         y = int(inp[1:])-1
         x = ord(inp[0].upper())-65
@@ -259,51 +261,31 @@ class Player:
             error.text = "X Hit power up bought!"
         cash.text = "Cash: " + str(self.cash)
     
-    def use2x2(self, enemy):
-        coord = input("Place the bottom left corner of your 2x2: (A1 - L12) ").upper()
-        if len(coord) == 2:
-            y,x = int(coord[1])-1, ord(coord[0])-65
-            for i in range(2):
-                for j in range(2):
-                    if enemy.board[y-i][x+j] == "S":
-                        enemy.board[y-i][x+j] = "H"
-                        for ship in enemy.shipList:
-                            for coord in ship.coordinates:
-                                if coord == [y-i,x+j]:
-                                    ship.health -= 1
-                                    if ship.health == 0:
-                                        print("Sunk!")
-                                        self.cash += 100
-                    elif enemy.board[y-i][x+j] == "-":
-                        enemy.board[y-i][x+j] = "M"
-            #Can delete this later just showing if it works right now
-            for row in enemy.board:
-                for i in range(12):
-                    if i != 11:
-                        print(row[i], end=" ")
-                    else:
-                        print(row[i])
-        else:
-            y,x = int(coord[1:])-1, ord(coord[0])-65
-            for i in range(2):
-                for j in range(2):
-                    if enemy.board[y-i][x+j] == "S":
-                        enemy.board[y-i][x+j] = "H"
-                        for ship in enemy.shipList:
-                            for coord in ship.coordinates:
-                                if coord == [y-i,x+j]:
-                                    ship.health -= 1
-                                    if ship.health == 0:
-                                        print("Sunk!")
-                                        self.cash += 100
-                    elif enemy.board[y-i][x+j] == "-":
-                        enemy.board[y-i][x+j] = "M"
-            for row in enemy.board:
-                for i in range(12):
-                    if i != 11:
-                        print(row[i], end=" ")
-                    else:
-                        print(row[i])
+    def use2x2(self, enemy, coord,error):
+        if self.powerUps.count("2x2") == 0:
+            return()
+        if coord[0].upper() not in "ABCDEFGHIJKL" or coord[1:] not in "123456789101112":
+            print("Invalid input! Try again")
+            error.text = "Invalid input! Try again"
+            return ()
+        if len(coord) != 2 and len(coord) != 3:
+            print("Invalid input! Try again")
+            error.text = "Invalid input! Try again"
+            return ()
+        y,x = int(coord[1:])-1, ord(coord[0].upper())-65
+        for i in range(2):
+            for j in range(2):
+                if enemy.board[y-i][x+j] == "S":
+                    enemy.board[y-i][x+j] = "H"
+                    for ship in enemy.shipList:
+                        for coord in ship.coordinates:
+                            if coord == [y-i,x+j]:
+                                ship.health -= 1
+                                if ship.health == 0:
+                                    print("Sunk!")
+                                    self.cash += 100
+                elif enemy.board[y-i][x+j] == "-":
+                    enemy.board[y-i][x+j] = "M"
         self.powerUps.remove("2x2")
     def useAirstrike(self, enemy):
         coords = []

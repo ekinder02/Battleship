@@ -43,8 +43,9 @@ class GameManager(Widget):
         global placePhase
         global press2
         global press1
-        press1 = lambda x: player1.shootMissileParam(player2,t.text)
-        press2 = lambda x: player2.shootMissileParam(player1,t.text)
+        global errorBox
+        press1 = lambda x: player1.shootMissileParam(player2,t.text,errorBox)
+        press2 = lambda x: player2.shootMissileParam(player1,t.text,errorBox)
         placePhase = True
         showBackground = True
         playerTurn = 1
@@ -60,8 +61,9 @@ class GameManager(Widget):
 
     def make_shop(self, player):
         global cash     
-        global errorBox  
+        global errorBox
         global enemy
+        global btn
         cash = Label(text = "Cash: " + str(player.cash), font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (1300, 670))
 
         self.add_widget(cash)
@@ -69,7 +71,8 @@ class GameManager(Widget):
         layout = GridLayout(cols = 3, rows = 5,size = (400, 200), pos = (1300,750))
         btns = []
         btn1 = Button(text = "2x2", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn1.bind(on_press = lambda x: player.use2x2(enemy))
+        btn1.bind(on_press = lambda x: currentPlayer.use2x2(enemy,t.text,errorBox))
+        btn1.bind(on_release = lambda x: self.release())
         btn2 = Button(text = "Price: 10", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn3 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn3.bind(on_press = lambda x: player.buy2x2(cash,errorBox))
@@ -266,6 +269,7 @@ class GameManager(Widget):
             enemy = player2
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             currentPlayer = player2
+            enemy = player1
             self.updateFiringBoard(currentPlayer)
             self.updateMyBoard(currentPlayer)
             self.updateCash(currentPlayer)
@@ -276,6 +280,7 @@ class GameManager(Widget):
             enemy = player1
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             currentPlayer = player1
+            enemy = player2
             self.updateFiringBoard(currentPlayer)
             self.updateMyBoard(currentPlayer)
             self.updateCash(currentPlayer)
