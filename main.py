@@ -61,6 +61,7 @@ class GameManager(Widget):
     def make_shop(self, player):
         global cash     
         global errorBox  
+        global enemy
         cash = Label(text = "Cash: " + str(player.cash), font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (1300, 670))
 
         self.add_widget(cash)
@@ -68,14 +69,16 @@ class GameManager(Widget):
         layout = GridLayout(cols = 3, rows = 5,size = (400, 200), pos = (1300,750))
         btns = []
         btn1 = Button(text = "2x2", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn1.bind(on)
-        btn2 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn1.bind(on_press = lambda x: player.use2x2(enemy))
+        btn2 = Button(text = "Price: 10", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn3 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn3.bind(on_press = lambda x: player.buy2x2(cash,errorBox))
         btn4 = Button(text = "Air Strike", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn4.bind(on_press = lambda x: player.useAirstrike(enemy))
         btn5 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn6 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn6.bind(on_press = lambda x: player.buyAirstrike(cash,errorBox))   
+        btn6.bind(on_press = lambda x: player.buyAirstrike(cash,errorBox))
+        btn6.bind(on_release = lambda x: btn4.background_color(255, 1, 1, 1))
         btn7 = Button(text = "UAV", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn8 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn9 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
@@ -256,9 +259,11 @@ class GameManager(Widget):
         global btn
         global firingLayout
         global mainLabel
+        global enemy
         global showBackground
         if playerTurn == player1:
             self.updateInput()
+            enemy = player2
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             currentPlayer = player2
             self.updateFiringBoard(currentPlayer)
@@ -268,6 +273,7 @@ class GameManager(Widget):
             showBackground = True
         elif playerTurn == player2:
             self.updateInput()
+            enemy = player1
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             currentPlayer = player1
             self.updateFiringBoard(currentPlayer)
@@ -369,6 +375,7 @@ class GameManager(Widget):
         global placePhase
         global playerTurn
         global instruct
+        global enemy
         if showBackground == False and placePhase == True:
             self.updateMyBoard(currentPlayer)
         if placePhase == False and showBackground == False:
@@ -379,6 +386,7 @@ class GameManager(Widget):
             placeShipLabel.text = "Place your " + str(currentPlayer.shipList[0].length) + " length ship"
         elif player2.shipList == [] and placePhase == True:
             currentPlayer = player1
+            enemy = player2
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             placePhase = False
             self.makeBoard(currentPlayer)

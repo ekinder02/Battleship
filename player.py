@@ -117,14 +117,14 @@ class Player:
                             print(row[i])
     
     def shootMissileParam(self,enemy,inp):
-        if inp[0] not in "ABCDEFGHIJKL" or inp[1:] not in "123456789101112":
+        if inp[0].upper() not in "ABCDEFGHIJKL" or inp[1:] not in "123456789101112":
             print("Invalid input! Try again")
             return ()
-        if len(inp) != 2:
+        if len(inp) != 2 and len(inp) != 3:
             print("Invalid input! Try again")
             return ()
         y = int(inp[1:])-1
-        x = ord(inp[0])-65
+        x = ord(inp[0].upper())-65
         if enemy.board[y][x] == "S":
             self.firingBoard[y][x] = "H"
             enemy.board[y][x] = "H"
@@ -141,6 +141,9 @@ class Player:
             self.firingBoard[y][x] = "M"
             enemy.board[y][x] = "M"
             print("Miss!")
+
+
+
 
     def checkWin(self):
         for i in self.shipList:
@@ -340,7 +343,7 @@ class Player:
                             print(row[i], end=" ")
                         else:
                             print(row[i])
-        self.powerUps.remove("useAirstrike")
+
     def useUAV(self,enemy):
         choice = input("Which row[1]/column[A] do you want to reveal? ").upper()
         if choice.isdigit():
