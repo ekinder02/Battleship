@@ -17,7 +17,7 @@ class Player:
             
     def createShipList(self):
         self.shipList.append(ship.Ship(5,5,[]))
-        self.shipList.append(ship.Ship(4,4,[]))
+        #self.shipList.append(ship.Ship(4,4,[]))
         #self.shipList.append(ship.Ship(3,3,[]))
         #self.shipList.append(ship.Ship(3,3,[]))
         #self.shipList.append(ship.Ship(2,2,[]))
@@ -27,14 +27,15 @@ class Player:
         if len(place)!= 4 and len(place) != 5:
             error.text = "Invalid input! Replace ship"
             return ()
-        if place[0].upper() not in "ABCDEFGHIJKL" or place[1:3].replace(" ","") not in "123456789101112":
+        if place[0] not in "ABCDEFGHIJKLabcdefghijkl" or place[1:3].replace(" ","") not in "123456789101112":
             error.text = "Invalid input! Replace ship"
             return ()
         if place[place.index(" ")+1:].lower() not in "vh":
             error.text = "Invalid input! Replace ship"
+            print("here")
             return ()
         y = int(place[1:place.index(" ")])-1
-        x = ord(place[0])-65
+        x = ord(place[0].upper())-65
         allignment = place[place.index(" ")+1:]
         if allignment.lower() == "v":
             if y-ship.length < 0:
@@ -177,32 +178,41 @@ class Player:
         else:
             return False
         
-    def buy2x2(self):
+    def buy2x2(self,cash,error):
         if self.cash < 10:
             print("Not enough cash!")
+            error.text = "Not enough cash!"
             return False
         else:
             self.cash -= 10
             self.powerUps.append("2x2")
             print("2x2 power up bought!")
+            error.text = "2x2 power up bought!"
+        cash.text = "Cash: " + str(self.cash)
     
-    def buyUAV(self):
+    def buyUAV(self,cash,error):
         if self.cash < 25:
             print("Not enough cash!")
+            error.text = "Not enough cash!"
             return False
         else:
             self.cash -= 25
             self.powerUps.append("UAV")
             print("UAV power up bought!")
+            error.text = "UAV power up bought!"
+        cash.text = "Cash: " + str(self.cash)
     
-    def buyAirstrike(self):
+    def buyAirstrike(self,cash,error):
         if self.cash < 50:
             print("Not enough cash!")
+            error.text = "Not enough cash!"
             return False
         else:
             self.cash -= 50
             self.powerUps.append("Airstrike")
             print("Airstrike power up bought!")
+            error.text = "Airstrike power up bought!"
+        cash.text = "Cash: " + str(self.cash)
 
     def buyBoatUpgrade(self):
         if self.cash < 50:
@@ -222,23 +232,30 @@ class Player:
             self.powerUps.append("Move Boat")
             print("Move Boat power up bought!")
     
-    def buyTwoMoves(self):
+    def buyTwoMoves(self,cash,error):
         if self.cash < 50:
             print("Not enough cash!")
+            error.text = "Not enough cash!"
             return False
         else:
             self.cash -= 50
             self.powerUps.append("Two Moves")
             print("Two Moves power up bought!")
+            error.text = "Two Moves power up bought!"
+        cash.text = "Cash: " + str(self.cash)
 
-    def buyXHit(self):
+    def buyXHit(self,cash,error):
         if self.cash < 50:
             print("Not enough cash!")
+            error.text = "Not enough cash!"
             return False
         else:
             self.cash -= 50
             self.powerUps.append("X Hit")
             print("X Hit power up bought!")
+            error.text = "X Hit power up bought!"
+        cash.text = "Cash: " + str(self.cash)
+    
     def use2x2(self, enemy):
         coord = input("Place the bottom left corner of your 2x2: (A1 - L12) ").upper()
         if len(coord) == 2:

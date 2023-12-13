@@ -59,28 +59,35 @@ class GameManager(Widget):
         self.clock = Clock.schedule_interval(self.update, 1.0/360.0)
 
     def make_shop(self, player):
+        global cash     
+        global errorBox  
+        cash = Label(text = "Cash: " + str(player.cash), font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (1300, 670))
+
+        self.add_widget(cash)
+        
         layout = GridLayout(cols = 3, rows = 5,size = (400, 200), pos = (1300,750))
         btns = []
         btn1 = Button(text = "2x2", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn1.bind(on)
         btn2 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn3 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn3.bind(on_press = lambda x: player.buy2x2())
+        btn3.bind(on_press = lambda x: player.buy2x2(cash,errorBox))
         btn4 = Button(text = "Air Strike", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn5 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn6 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn6.bind(on_press = lambda x: player.buyAirStrike())   
+        btn6.bind(on_press = lambda x: player.buyAirstrike(cash,errorBox))   
         btn7 = Button(text = "UAV", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn8 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn9 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn9.bind(on_press = lambda x: player.buyUAV())
+        btn9.bind(on_press = lambda x: player.buyUAV(cash,errorBox))
         btn10 = Button(text = "2 Moves", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn11 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn12 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn12.bind(on_press = lambda x: player.buyTwoMoves())
+        btn12.bind(on_press = lambda x: player.buyTwoMoves(cash,errorBox))
         btn13 = Button(text = "X Hit", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn14 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn15 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn15.bind(on_press = lambda x: player.buyXHit())
+        btn15.bind(on_press = lambda x: player.buyXHit(cash,errorBox))
         btns.append(btn1)
         btns.append(btn2)
         btns.append(btn3)
@@ -99,11 +106,6 @@ class GameManager(Widget):
         for i in btns:
             layout.add_widget(i)
 
-
-        global cash       
-        cash = Label(text = "Cash: " + str(player.cash), font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (1300, 670))
-
-        self.add_widget(cash)
         self.add_widget(layout)
         
     def updateCash(self,player):
