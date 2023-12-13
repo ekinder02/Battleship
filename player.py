@@ -254,6 +254,7 @@ class Player:
             for j in range(2):
                 if enemy.board[y-i][x+j] == "S":
                     enemy.board[y-i][x+j] = "H"
+                    self.firingBoard[y-i][x+j] = "H"
                     for ship in enemy.shipList:
                         for coord in ship.coordinates:
                             if coord == [y-i,x+j]:
@@ -263,10 +264,14 @@ class Player:
                                     self.cash += 100
                 elif enemy.board[y-i][x+j] == "-":
                     enemy.board[y-i][x+j] = "M"
+                    self.firingBoard[y-i][x+j] = "M"
         self.powerUps.remove("2x2")
     def useAirstrike(self, enemy):
         coords = []
         coord_options = []
+        
+        if self.powerUps.count("Airstrike") == 0:
+            return()
         
         for letter in range(ord('A'), ord('M')):
             for number in range(1, 13):
@@ -280,13 +285,12 @@ class Player:
                 coords.remove(coord)
             if enemy.board[int(coord[1:])-1][ord(coord[0])-65] == "H":
                 coords.remove(coord)
-
-
-
+                
         for num in coords:
             y,x = int(num[1:])-1, ord(num[0])-65
             if enemy.board[y][x] == "S":
                 enemy.board[y][x] = "H"
+                self.firingBoard[y][x] = "H"
                 for ship in enemy.shipList:
                     for coord in ship.coordinates:
                         if coord == [y,x]:
@@ -296,14 +300,13 @@ class Player:
                                 self.cash += 100
             elif enemy.board[y][x] == "-":
                 enemy.board[y][x] = "M"
-        for row in enemy.board:
-                    for i in range(12):
-                        if i != 11:
-                            print(row[i], end=" ")
-                        else:
-                            print(row[i])
+                self.firingBoard[y][x] = "M"
+                
+        self.powerUps.remove("Airstrike")
 
     def useUAV(self,enemy):
+        if self.powerUps.count("UAV") == 0:
+            return()
         choice = input("Which row[1]/column[A] do you want to reveal? ").upper()
         if choice.isdigit():
             y = int(choice)-1
