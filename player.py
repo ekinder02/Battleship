@@ -238,6 +238,94 @@ class Player:
             error.text = "X Hit power up bought!"
         cash.text = "Cash: " + str(self.cash)
     
+    def useXHit(self,enemy, coord, error):
+        print(coord)
+        if self.powerUps.count("X Hit") == 0:
+            return()
+        if coord[0].upper() not in "ABCDEFGHIJKL" or coord[1:] not in "123456789101112":
+            print("Invalid input! Try again")
+            error.text = "Invalid input! Try again"
+            return ()
+        if len(coord) != 2 and len(coord) != 3:
+            print("Invalid input! Try again")
+            error.text = "Invalid input! Try again"
+            return ()
+        y,x = int(coord[1:])-1, ord(coord[0].upper())-65
+        if enemy.board[y][x] == "S":
+            enemy.board[y][x] = "H"
+            self.firingBoard[y][x] = "H"
+            for ship in enemy.shipList:
+                for coord in ship.coordinates:
+                    if coord == [y,x]:
+                        ship.health -= 1
+                        if ship.health == 0:
+                            print("Sunk!")
+                            self.cash += 100
+        if enemy.board[y][x] == "-":
+            enemy.board[y][x] = "M"
+            self.firingBoard[y][x] = "M"
+        if enemy.board[y+1][x+1] == "S":
+            enemy.board[y+1][x+1] = "H"
+            self.firingBoard[y+1][x+1] = "H"
+            for ship in enemy.shipList:
+                for coord in ship.coordinates:
+                    if coord == [y+1,x+1]:
+                        ship.health -= 1
+                        if ship.health == 0:
+                            print("Sunk!")
+                            self.cash += 100
+        if enemy.board[y+1][x+1] == "-":
+            enemy.board[y+1][x+1] = "M"
+            self.firingBoard[y+1][x+1] = "M"
+        if enemy.board[y-1][x-1] == "S":
+            enemy.board[y-1][x-1] = "H"
+            self.firingBoard[y-1][x-1] = "H"
+            for ship in enemy.shipList:
+                for coord in ship.coordinates:
+                    if coord == [y-1,x-1]:
+                        ship.health -= 1
+                        if ship.health == 0:
+                            print("Sunk!")
+                            self.cash += 100
+        if enemy.board[y-1][x-1] == "-":
+            enemy.board[y-1][x-1] = "M"
+            self.firingBoard[y-1][x-1] = "M"
+        if enemy.board[y+1][x-1] == "S":
+            enemy.board[y+1][x-1] = "H"
+            self.firingBoard[y+1][x-1] = "H"
+            for ship in enemy.shipList:
+                for coord in ship.coordinates:
+                    if coord == [y+1,x-1]:
+                        ship.health -= 1
+                        if ship.health == 0:
+                            print("Sunk!")
+                            self.cash += 100
+        if enemy.board[y+1][x-1] == "-":
+            enemy.board[y+1][x-1] = "M"
+            self.firingBoard[y+1][x-1] = "M"
+        if enemy.board[y-1][x+1] == "S":
+            enemy.board[y-1][x+1] = "H"
+            self.firingBoard[y-1][x+1] = "H"
+            for ship in enemy.shipList:
+                for coord in ship.coordinates:
+                    if coord == [y-1,x+1]:
+                        ship.health -= 1
+                        if ship.health == 0:
+                            print("Sunk!")
+                            self.cash += 100
+        if enemy.board[y-1][x+1] == "-":
+            enemy.board[y-1][x+1] = "M"
+            self.firingBoard[y-1][x+1] = "M"
+
+        for row in self.firingBoard:
+            for i in range(12):
+                if i != 11:
+                    print(row[i], end=" ")
+                else:
+                    print(row[i])
+        self.powerUps.remove("X Hit")
+        
+
     def use2x2(self, enemy, coord,error):
         if self.powerUps.count("2x2") == 0:
             return()
@@ -332,24 +420,4 @@ class Player:
         self.shootMissile(enemy)
         self.shootMissile(enemy)
         self.powerUps.remove("useTwoMoves")
-    def useXHit(self,enemy):
-        coord = input("Place the center of your X strike: (A1 - L12) ").upper()
-        if len(coord) == 2:
-            y,x = int(coord[1])-1, ord(coord[0])-65
-        self.shootMissileParam(enemy,y,x)
-        if y-1 >= 0 and x-1 >= 0:
-            self.shootMissileParam(enemy,y-1,x-1)
-        if y+1 <= 11 and x+1 <= 11:
-            self.shootMissileParam(enemy,y+1,x+1)
-        if y-1 >= 0 and x+1 <= 11:
-            self.shootMissileParam(enemy,y-1,x+1)
-        if y+1 <= 11 and x-1 >= 0:
-            self.shootMissileParam(enemy,y+1,x-1)
-        for row in self.firingBoard:
-            for i in range(12):
-                if i != 11:
-                    print(row[i], end=" ")
-                else:
-                    print(row[i])
-        self.powerUps.remove("X Hit")
-        
+    
