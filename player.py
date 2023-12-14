@@ -402,26 +402,7 @@ class Player:
         self.shootMissile(enemy)
         self.powerUps.remove("useTwoMoves")
 
-    def useXHit(self,enemy):
-        coord = input("Place the center of your X strike: (A1 - L12) ").upper()
-        if len(coord) == 2:
-            y,x = int(coord[1])-1, ord(coord[0])-65
-        self.shootMissileParam(enemy,y,x)
-        if y-1 >= 0 and x-1 >= 0:
-            self.shootMissileParam(enemy,y-1,x-1)
-        if y+1 <= 11 and x+1 <= 11:
-            self.shootMissileParam(enemy,y+1,x+1)
-        if y-1 >= 0 and x+1 <= 11:
-            self.shootMissileParam(enemy,y-1,x+1)
-        if y+1 <= 11 and x-1 >= 0:
-            self.shootMissileParam(enemy,y+1,x-1)
-        for row in self.firingBoard:
-            for i in range(12):
-                if i != 11:
-                    print(row[i], end=" ")
-                else:
-                    print(row[i])
-        self.powerUps.remove("X Hit")
+   
         
     def checkWin(self,enemy):
         for i in enemy.shipList:

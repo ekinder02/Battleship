@@ -344,12 +344,14 @@ class GameManager(Widget):
             self.updateMyBoard(currentPlayer)
             self.updateCash(currentPlayer)
             if currentPlayer.checkWin(enemy) == True:
-                print(str(currentPlayer.number) + " wins!")
+                print("Player" + str(currentPlayer.number) + " wins!")
+                errorBox.text = str(currentPlayer.number) + " wins!"
             return()
         elif playerTurn == player1:
             self.updateInput()
             if currentPlayer.checkWin(enemy) == True:
-                print(str(currentPlayer.number) + " wins!")
+                print("Player" + str(currentPlayer.number) + " wins!")
+                errorBox.text = str(currentPlayer.number) + " wins!"
             enemy = player2
             currentPlayer = player2
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
