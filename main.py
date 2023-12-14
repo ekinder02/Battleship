@@ -130,7 +130,6 @@ class GameManager(Widget):
         global btn
         global shoplayout
         cash.text = "Cash: " + str(player.cash)
-        print("here")
         shoplayout.clear_widgets()
         btns = []
         btn1 = Button(text = "2x2", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
@@ -219,7 +218,7 @@ class GameManager(Widget):
                         pos = (0,0),
                     )
         global currentPlayer
-        placeButton.bind(on_press = lambda x: currentPlayer.placeShip(shipLabel.text,currentPlayer.shipList[0],placeShipLabel,errorBox))
+        placeButton.bind(on_press = lambda x: currentPlayer.placeShip(shipLabel.text,currentPlayer.shipList[currentPlayer.ships - 1],placeShipLabel,errorBox))
         placeShipLayout.add_widget(placeButton)
         placeShipLayout.add_widget(shipLabel)
         self.add_widget(placeShipLayout)
@@ -330,7 +329,6 @@ class GameManager(Widget):
         self.add_widget(layout)
     
     def release(self):
-        print("released")
         global currentPlayer
         global playerTurn
         global btn
@@ -345,11 +343,13 @@ class GameManager(Widget):
             self.updateFiringBoard(currentPlayer)
             self.updateMyBoard(currentPlayer)
             self.updateCash(currentPlayer)
+            if currentPlayer.checkWin(enemy) == True:
+                print(str(currentPlayer.number) + " wins!")
             return()
         elif playerTurn == player1:
-            print("here")
-            print(player1ExtraTurn)
             self.updateInput()
+            if currentPlayer.checkWin(enemy) == True:
+                print(str(currentPlayer.number) + " wins!")
             enemy = player2
             currentPlayer = player2
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
@@ -359,16 +359,19 @@ class GameManager(Widget):
             self.updateCash(currentPlayer)
             self.update_shop(currentPlayer)
             self.backgroundImageButton()
-
             showBackground = True
         elif player2ExtraTurn > 0:
-                player2ExtraTurn -= 1
-                self.updateFiringBoard(currentPlayer)
-                self.updateMyBoard(currentPlayer)
-                self.updateCash(currentPlayer)
-                return()
+            player2ExtraTurn -= 1
+            self.updateFiringBoard(currentPlayer)
+            self.updateMyBoard(currentPlayer)
+            self.updateCash(currentPlayer)
+            if currentPlayer.checkWin(enemy) == True:
+                print(str(currentPlayer.number) + " wins!")
+            return()
         elif playerTurn == player2:
             self.updateInput()
+            if currentPlayer.checkWin(enemy) == True:
+                print(str(currentPlayer.number) + " wins!")
             enemy = player1
             currentPlayer = player1
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
@@ -476,11 +479,11 @@ class GameManager(Widget):
             self.updateMyBoard(currentPlayer)
         if placePhase == False and showBackground == False:
             playerTurn = currentPlayer
-        if player1.shipList == [] and player2.shipList != [] and currentPlayer == player1 and placePhase == True:
+        if player1.ships == 0 and player2.ships != 0 and currentPlayer == player1 and placePhase == True:
             currentPlayer = player2
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             placeShipLabel.text = "Place your " + str(currentPlayer.shipList[0].length) + " length ship"
-        elif player2.shipList == [] and placePhase == True:
+        elif player2.ships == 0 and placePhase == True:
             currentPlayer = player1
             enemy = player2
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
