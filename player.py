@@ -8,6 +8,7 @@ class Player:
         self.firingBoard = firingBoard
         self.number = number
         self.powerUps = powerUps
+        self.ships = 0
     def createCleanBoard(self):
         self.board = []
         self.firingBoard = []
@@ -17,6 +18,7 @@ class Player:
             
     def createShipList(self):
         self.shipList.append(ship.Ship(5,5,[]))
+        self.ships += 1
         #self.shipList.append(ship.Ship(4,4,[]))
         #self.shipList.append(ship.Ship(3,3,[]))
         #self.shipList.append(ship.Ship(3,3,[]))
@@ -59,8 +61,8 @@ class Player:
             for j in range(ship.length):
                 self.board[y][x+j] = "S"
                 ship.coordinates.append([y,x+j])
-        self.shipList.remove(ship)
         error.text = ""
+        self.ships -= 1
         if self.shipList != []:
             placeShipLabel.text = "Place your " + str(self.shipList[0].length) + " length ship"
     def usePowerUp(self):
@@ -118,11 +120,9 @@ class Player:
     
     def shootMissileParam(self,enemy,inp,error):
         if inp[0].upper() not in "ABCDEFGHIJKL" or inp[1:] not in "123456789101112":
-            print("Invalid input! Try again")
             error.text = "Invalid input! Try again"
             return ()
         if len(inp) != 2 and len(inp) != 3:
-            print("Invalid input! Try again")
             error.text = "Invalid input! Try again"
             return ()
         y = int(inp[1:])-1
@@ -143,23 +143,8 @@ class Player:
             self.firingBoard[y][x] = "M"
             enemy.board[y][x] = "M"
             print("Miss!")
-
-
-
-
-    def checkWin(self):
-        for i in self.shipList:
-            if i.checkHealth() == False:
-                return False
-        return True
     
     def buyPowerUps(self):
-        print("You have " + str(self.cash) + " cash.")
-        print("2x2 -> 10 cash")
-        print("UAV -> 25 cash")
-        print("Airstrike -> 50 cash")
-        print("Two Moves -> 50 cash")
-        print("X Hit -> 50 cash")
 
         z = input("Do you want to buy a power up? (Y/N) ").lower()
         if z == "y":
@@ -330,11 +315,9 @@ class Player:
         if self.powerUps.count("2x2") == 0:
             return()
         if coord[0].upper() not in "ABCDEFGHIJKL" or coord[1:] not in "123456789101112":
-            print("Invalid input! Try again")
             error.text = "Invalid input! Try again"
             return ()
         if len(coord) != 2 and len(coord) != 3:
-            print("Invalid input! Try again")
             error.text = "Invalid input! Try again"
             return ()
         y,x = int(coord[1:])-1, ord(coord[0].upper())-65
@@ -409,7 +392,6 @@ class Player:
             for i,v in enumerate(enemy.board):
                 if i == x:
                     for y,j in enumerate(v):
-                        print(j)
                         if j == "S":
                             self.firingBoard[x][y] = "S"
                         if j == "-":
@@ -420,4 +402,31 @@ class Player:
         self.shootMissile(enemy)
         self.shootMissile(enemy)
         self.powerUps.remove("useTwoMoves")
-    
+
+    def useXHit(self,enemy):
+        coord = input("Place the center of your X strike: (A1 - L12) ").upper()
+        if len(coord) == 2:
+            y,x = int(coord[1])-1, ord(coord[0])-65
+        self.shootMissileParam(enemy,y,x)
+        if y-1 >= 0 and x-1 >= 0:
+            self.shootMissileParam(enemy,y-1,x-1)
+        if y+1 <= 11 and x+1 <= 11:
+            self.shootMissileParam(enemy,y+1,x+1)
+        if y-1 >= 0 and x+1 <= 11:
+            self.shootMissileParam(enemy,y-1,x+1)
+        if y+1 <= 11 and x-1 >= 0:
+            self.shootMissileParam(enemy,y+1,x-1)
+        for row in self.firingBoard:
+            for i in range(12):
+                if i != 11:
+                    print(row[i], end=" ")
+                else:
+                    print(row[i])
+        self.powerUps.remove("X Hit")
+        
+    def checkWin(self,enemy):
+        for i in enemy.shipList:
+            if i.health != 0:
+                return False
+        return True
+        
