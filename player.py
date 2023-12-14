@@ -392,28 +392,26 @@ class Player:
                 
         self.powerUps.remove("Airstrike")
 
-    def useUAV(self,enemy):
+    def useUAV(self,enemy, coord,error):
+        print(coord)
         if self.powerUps.count("UAV") == 0:
+            error.text = "You don't have a UAV!"
             return()
-        choices = ["A","B","C","D","E","F","G","H","I","J","K","L","1","2","3","4","5","6","7","8","9","10","11","12"]
-        choice = random.choice(choices)
-        if choice.isdigit():
-            y = int(choice)-1
-            for x,v in enumerate(enemy.board):
-                if v[y] == "S":
-                    self.firingBoard[x][y] = "S"
-                elif v[y] == "-":
-                    self.firingBoard[x][y] = "M"
+        if coord.isnumeric():
+            y = int(coord)-1
+            for x in range(12):
+                if enemy.board[y][x] == "S":
+                    self.firingBoard[y][x] = "S"
+                elif enemy.board[y][x] == "-":
+                    self.firingBoard[y][x] = "M"
         else:
-            x = ord(choice)-65
-            for i,v in enumerate(enemy.board):
-                if i == x:
-                    for y,j in enumerate(v):
-                        print(j)
-                        if j == "S":
-                            self.firingBoard[x][y] = "S"
-                        if j == "-":
-                            self.firingBoard[x][y] = "M"
+            x=coord.upper()
+            x = ord(x)-65
+            for y in range(12):
+                if enemy.board[y][x] == "S":
+                    self.firingBoard[y][x] = "S"
+                elif enemy.board[y][x] == "-":
+                    self.firingBoard[y][x] = "M"
 
         self.powerUps.remove("UAV")
     def useTwoMoves(self, enemy):
