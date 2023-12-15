@@ -464,7 +464,7 @@ class GameManager(Widget):
         self.add_widget(instruct)
     def placeShipText(self):
         global placeShipLabel
-        placeShipLabel = Label(text = f"Place your {currentPlayer.shipList[0].length} long ship", font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (850, 600))
+        placeShipLabel = Label(text = f"Place your {currentPlayer.shipList[-1].length} long ship", font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (850, 600))
         self.add_widget(placeShipLabel)
     def errorBox(self):
         global errorBox

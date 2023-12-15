@@ -19,8 +19,8 @@ class Player:
     def createShipList(self):
         self.shipList.append(ship.Ship(5,5,[]))
         self.ships += 1
-        self.shipList.append(ship.Ship(4,4,[]))
-        self.ships += 1
+        # self.shipList.append(ship.Ship(4,4,[]))
+        # self.ships += 1
         #self.shipList.append(ship.Ship(3,3,[]))
         #self.ships += 1
         #self.shipList.append(ship.Ship(3,3,[]))
@@ -44,7 +44,7 @@ class Player:
         x = ord(place[0].upper())-65
         allignment = place[place.index(" ")+1:]
         if allignment.lower() == "v":
-            if y-ship.length < 0:
+            if y-ship.length + 1 < 0:
                 error.text = "Ship out of bounds! Replace ship"
                 return ()
             for i in range(ship.length):
@@ -252,65 +252,62 @@ class Player:
         if enemy.board[y][x] == "-":
             enemy.board[y][x] = "M"
             self.firingBoard[y][x] = "M"
-        if enemy.board[y+1][x+1] == "S":
-            enemy.board[y+1][x+1] = "H"
-            self.firingBoard[y+1][x+1] = "H"
-            for ship in enemy.shipList:
-                for coord in ship.coordinates:
-                    if coord == [y+1,x+1]:
-                        ship.health -= 1
-                        if ship.health == 0:
-                            print("Sunk!")
-                            self.cash += 100
-        if enemy.board[y+1][x+1] == "-":
-            enemy.board[y+1][x+1] = "M"
-            self.firingBoard[y+1][x+1] = "M"
-        if enemy.board[y-1][x-1] == "S":
-            enemy.board[y-1][x-1] = "H"
-            self.firingBoard[y-1][x-1] = "H"
-            for ship in enemy.shipList:
-                for coord in ship.coordinates:
-                    if coord == [y-1,x-1]:
-                        ship.health -= 1
-                        if ship.health == 0:
-                            print("Sunk!")
-                            self.cash += 100
-        if enemy.board[y-1][x-1] == "-":
-            enemy.board[y-1][x-1] = "M"
-            self.firingBoard[y-1][x-1] = "M"
-        if enemy.board[y+1][x-1] == "S":
-            enemy.board[y+1][x-1] = "H"
-            self.firingBoard[y+1][x-1] = "H"
-            for ship in enemy.shipList:
-                for coord in ship.coordinates:
-                    if coord == [y+1,x-1]:
-                        ship.health -= 1
-                        if ship.health == 0:
-                            print("Sunk!")
-                            self.cash += 100
-        if enemy.board[y+1][x-1] == "-":
-            enemy.board[y+1][x-1] = "M"
-            self.firingBoard[y+1][x-1] = "M"
-        if enemy.board[y-1][x+1] == "S":
-            enemy.board[y-1][x+1] = "H"
-            self.firingBoard[y-1][x+1] = "H"
-            for ship in enemy.shipList:
-                for coord in ship.coordinates:
-                    if coord == [y-1,x+1]:
-                        ship.health -= 1
-                        if ship.health == 0:
-                            print("Sunk!")
-                            self.cash += 100
-        if enemy.board[y-1][x+1] == "-":
-            enemy.board[y-1][x+1] = "M"
-            self.firingBoard[y-1][x+1] = "M"
-
-        for row in self.firingBoard:
-            for i in range(12):
-                if i != 11:
-                    print(row[i], end=" ")
-                else:
-                    print(row[i])
+        if y+1 < 12 and x+1 < 12:
+            if enemy.board[y+1][x+1] == "S":
+                enemy.board[y+1][x+1] = "H"
+                self.firingBoard[y+1][x+1] = "H"
+                for ship in enemy.shipList:
+                    for coord in ship.coordinates:
+                        if coord == [y+1,x+1]:
+                            ship.health -= 1
+                            if ship.health == 0:
+                                print("Sunk!")
+                                self.cash += 100
+            if enemy.board[y+1][x+1] == "-":
+                enemy.board[y+1][x+1] = "M"
+                self.firingBoard[y+1][x+1] = "M"
+        if y-1 > -1 and x-1 > -1:
+            if enemy.board[y-1][x-1] == "S":
+                enemy.board[y-1][x-1] = "H"
+                self.firingBoard[y-1][x-1] = "H"
+                for ship in enemy.shipList:
+                    for coord in ship.coordinates:
+                        if coord == [y-1,x-1]:
+                            ship.health -= 1
+                            if ship.health == 0:
+                                print("Sunk!")
+                                self.cash += 100
+            if enemy.board[y-1][x-1] == "-":
+                enemy.board[y-1][x-1] = "M"
+                self.firingBoard[y-1][x-1] = "M"
+        if y+1 < 12 and x-1 > -1:
+            if enemy.board[y+1][x-1] == "S":
+                enemy.board[y+1][x-1] = "H"
+                self.firingBoard[y+1][x-1] = "H"
+                for ship in enemy.shipList:
+                    for coord in ship.coordinates:
+                        if coord == [y+1,x-1]:
+                            ship.health -= 1
+                            if ship.health == 0:
+                                print("Sunk!")
+                                self.cash += 100
+            if enemy.board[y+1][x-1] == "-":
+                enemy.board[y+1][x-1] = "M"
+                self.firingBoard[y+1][x-1] = "M"
+        if y-1 > -1 and x+1 < 12:
+            if enemy.board[y-1][x+1] == "S":
+                enemy.board[y-1][x+1] = "H"
+                self.firingBoard[y-1][x+1] = "H"
+                for ship in enemy.shipList:
+                    for coord in ship.coordinates:
+                        if coord == [y-1,x+1]:
+                            ship.health -= 1
+                            if ship.health == 0:
+                                print("Sunk!")
+                                self.cash += 100
+            if enemy.board[y-1][x+1] == "-":
+                enemy.board[y-1][x+1] = "M"
+                self.firingBoard[y-1][x+1] = "M"
         self.powerUps.remove("X Hit")
         
 
@@ -327,6 +324,8 @@ class Player:
         y,x = int(coord[1:])-1, ord(coord[0].upper())-65
         for i in range(2):
             for j in range(2):
+                if y-i < 0 or x+j > 11:
+                    continue
                 if enemy.board[y-i][x+j] == "S":
                     enemy.board[y-i][x+j] = "H"
                     self.firingBoard[y-i][x+j] = "H"
