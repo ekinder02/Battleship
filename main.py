@@ -23,10 +23,10 @@ from functools import partial
 from kivy.uix.progressbar import ProgressBar
 from kivy.core.window import Window
 
-
+Config.set('graphics', 'resizable', True)
 class BattleshipApp(App): 
     def build(self):
-        # Window.size = (1000, 920)
+        Window.size = (1800, 950)
         Window.resizable = True
         game = GameManager()
         return game
@@ -69,55 +69,67 @@ class GameManager(Widget):
         global enemy
         global btn
         global shoplayout
-        cash = Label(text = "Cash: " + str(player.cash), font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (1300, 670))
+        cash = Label(text = "Cash: " + str(player.cash), font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (250, 825))
 
         self.add_widget(cash)
         
-        shoplayout = GridLayout(cols = 3, rows = 5,size = (400, 200), pos = (1300,750))
+        shoplayout = GridLayout(cols = 3, rows = 5,size = (400, 200), pos = (100,650))
         btns = []
-        btn1 = Button(text = "2x2", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn1.bind(on_press = lambda x: player1.use2x2(enemy,t.text,errorBox))
-        btn1.bind(on_release = lambda x: self.release())
-        btn2 = Button(text = "Price: 10", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn3 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn3.bind(on_press = lambda x: player1.buy2x2(cash,errorBox))
-        btn4 = Button(text = "Air Strike", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn4.bind(on_press = lambda x: player.useAirstrike(enemy))
-        btn5 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn6 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        twobytwoAmount = player.powerUps.count("2x2")
+        airStrikeAmount = player.powerUps.count("Airstrike")
+        UAVAmount = player.powerUps.count("UAV")
+        twoMovesAmount = player.powerUps.count("Two Moves")
+        xHitAmount = player.powerUps.count("X Hit")
+        btn1 = Button(text = f"Use 2x2: {twobytwoAmount}x", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn1.bind(on_press = lambda x: player.use2x2(enemy,t.text,errorBox))
+        btn1.bind(on_release = lambda x: self.updateScreen())
+        btn2 = Button(text = "Price: 40", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn3 = Button(text = "Buy 2x2", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn3.bind(on_press = lambda x: player.buy2x2(cash,errorBox))
+        btn3.bind(on_release = lambda x: self.updateScreen())
+        btn4 = Button(text = f"Use Air Strike: {airStrikeAmount}x", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn4.bind(on_press = lambda x: player.useAirstrike(enemy,errorBox))
+        btn4.bind(on_release = lambda x: self.updateScreen())
+        btn5 = Button(text = "Price: 40", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn6 = Button(text = "Buy Air Strike", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn6.bind(on_press = lambda x: player.buyAirstrike(cash,errorBox))
-        btn7 = Button(text = "UAV", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn6.bind(on_release = lambda x: self.updateScreen())
+        btn7 = Button(text = f"Use UAV: {UAVAmount}x", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn7.bind(on_press = lambda x: player.useUAV(enemy, t.text, errorBox))
-        btn7.bind(on_release = lambda x: self.release())
+        btn7.bind(on_release = lambda x: self.updateScreen())
         btn8 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn9 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn9 = Button(text = "Buy UAV", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn9.bind(on_press = lambda x: player.buyUAV(cash,errorBox))
-        btn10 = Button(text = "2 Moves", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn9.bind(on_release = lambda x: self.updateScreen())
+        btn10 = Button(text = f"Use Extra Move: {twoMovesAmount}x", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn10.bind(on_press = lambda x: self.getExtraMove())
-        btn11 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn12 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn10.bind(on_release = lambda x: self.updateScreen())
+        btn11 = Button(text = "Price: 20", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn12 = Button(text = "Buy Extra Move", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn12.bind(on_press = lambda x: player.buyTwoMoves(cash,errorBox))
-        btn13 = Button(text = "X Hit", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn12.bind(on_release = lambda x: self.updateScreen())
+        btn13 = Button(text = f"Use X Hit: {xHitAmount}x", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn13.bind(on_press = lambda x: player.useXHit(enemy, t.text, errorBox))
-        btn13.bind(on_release = lambda x: self.release())
-        btn14 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn15 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn13.bind(on_release = lambda x: self.updateScreen())
+        btn14 = Button(text = "Price: 40", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn15 = Button(text = "Buy X Hit", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn15.bind(on_press = lambda x: player.buyXHit(cash,errorBox))
-        btns.append(btn1)
+        btn15.bind(on_release = lambda x: self.updateScreen())
         btns.append(btn2)
         btns.append(btn3)
-        btns.append(btn4)
+        btns.append(btn1)
         btns.append(btn5)
         btns.append(btn6)
-        btns.append(btn7)
+        btns.append(btn4)
         btns.append(btn8)
         btns.append(btn9)
-        btns.append(btn10)
+        btns.append(btn7)
         btns.append(btn11)
         btns.append(btn12)
-        btns.append(btn13)
+        btns.append(btn10)
         btns.append(btn14)
         btns.append(btn15)
+        btns.append(btn13)
         for i in btns:
             shoplayout.add_widget(i)
 
@@ -132,50 +144,61 @@ class GameManager(Widget):
         cash.text = "Cash: " + str(player.cash)
         shoplayout.clear_widgets()
         btns = []
-        btn1 = Button(text = "2x2", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        twobytwoAmount = player.powerUps.count("2x2")
+        airStrikeAmount = player.powerUps.count("Airstrike")
+        UAVAmount = player.powerUps.count("UAV")
+        twoMovesAmount = player.powerUps.count("Two Moves")
+        xHitAmount = player.powerUps.count("X Hit")
+        btn1 = Button(text = f"Use 2x2: {twobytwoAmount}x", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn1.bind(on_press = lambda x: player.use2x2(enemy,t.text,errorBox))
-        btn1.bind(on_release = lambda x: self.release())
-        btn2 = Button(text = "Price: 10", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn3 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn1.bind(on_release = lambda x: self.updateScreen())
+        btn2 = Button(text = "Price: 40", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn3 = Button(text = "Buy 2x2", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn3.bind(on_press = lambda x: player.buy2x2(cash,errorBox))
-        btn4 = Button(text = "Air Strike", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn4.bind(on_press = lambda x: player.useAirstrike(enemy))
-        btn4.bind(on_release = lambda x: self.release())
-        btn5 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn6 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn3.bind(on_release = lambda x: self.updateScreen())
+        btn4 = Button(text = f"Use Air Strike: {airStrikeAmount}x", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn4.bind(on_press = lambda x: player.useAirstrike(enemy,errorBox))
+        btn4.bind(on_release = lambda x: self.updateScreen())
+        btn5 = Button(text = "Price: 40", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn6 = Button(text = "Buy Air Strike", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn6.bind(on_press = lambda x: player.buyAirstrike(cash,errorBox))
-        btn7 = Button(text = "UAV", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn6.bind(on_release = lambda x: self.updateScreen())
+        btn7 = Button(text = f"Use UAV: {UAVAmount}x", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn7.bind(on_press = lambda x: player.useUAV(enemy, t.text, errorBox))
-        btn7.bind(on_release = lambda x: self.release())
+        btn7.bind(on_release = lambda x: self.updateScreen())
         btn8 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn9 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn9 = Button(text = "Buy UAV", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn9.bind(on_press = lambda x: player.buyUAV(cash,errorBox))
-        btn10 = Button(text = "2 Moves", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn9.bind(on_release = lambda x: self.updateScreen())
+        btn10 = Button(text = f"Use Extra Move: {twoMovesAmount}x", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn10.bind(on_press = lambda x: self.getExtraMove())
-        btn11 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn12 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn10.bind(on_release = lambda x: self.updateScreen())
+        btn11 = Button(text = "Price: 20", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn12 = Button(text = "Buy Extra Move", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn12.bind(on_press = lambda x: player.buyTwoMoves(cash,errorBox))
-        btn13 = Button(text = "X Hit", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn12.bind(on_release = lambda x: self.updateScreen())
+        btn13 = Button(text = f"Use X Hit: {xHitAmount}x", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn13.bind(on_press = lambda x: player.useXHit(enemy, t.text, errorBox))
-        btn13.bind(on_release = lambda x: self.release())
-        btn14 = Button(text = "Price: 50", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
-        btn15 = Button(text = "Buy", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn13.bind(on_release = lambda x: self.updateScreen())
+        btn14 = Button(text = "Price: 40", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        btn15 = Button(text = "Buy X Hit", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
         btn15.bind(on_press = lambda x: player.buyXHit(cash,errorBox))
-        btns.append(btn1)
+        btn15.bind(on_release = lambda x: self.updateScreen())
         btns.append(btn2)
         btns.append(btn3)
-        btns.append(btn4)
+        btns.append(btn1)
         btns.append(btn5)
         btns.append(btn6)
-        btns.append(btn7)
+        btns.append(btn4)
         btns.append(btn8)
         btns.append(btn9)
-        btns.append(btn10)
+        btns.append(btn7)
         btns.append(btn11)
         btns.append(btn12)
-        btns.append(btn13)
+        btns.append(btn10)
         btns.append(btn14)
         btns.append(btn15)
+        btns.append(btn13)
         for i in btns:
             shoplayout.add_widget(i)
         
@@ -184,6 +207,13 @@ class GameManager(Widget):
         cash.text = "Cash: " + str(player.cash)
     
     def getExtraMove(self):
+        global errorBox
+        if currentPlayer.powerUps.count("Two Moves") == 0:
+            errorBox.text = "You do not have an extra move!"
+        if currentPlayer.powerUps.count("Two Moves") > 0:
+            currentPlayer.powerUps.remove("Two Moves")
+        else:
+            errorBox.text = "You do not have an extra move!"
         if currentPlayer == player1:
             global player1ExtraTurn
             player1ExtraTurn += 1
@@ -208,7 +238,7 @@ class GameManager(Widget):
     def placeShip(self):
         global placeShipLayout
         global placeShipLabel
-        placeShipLayout = GridLayout(cols = 1, rows = 2,size = (150, 200), pos = (550,200))
+        placeShipLayout = GridLayout(cols = 1, rows = 2,size = (150, 200), pos = (800,200))
         shipLabel = TextInput(font_size = 50, 
                       size_hint_y = None, 
                       height = 100)
@@ -225,7 +255,7 @@ class GameManager(Widget):
     
     def makeBoard(self,player):
         global layout
-        layout = GridLayout(cols = 12, rows = 12,size = (500, 500), pos = (0,0))
+        layout = GridLayout(cols = 12, rows = 12,size = (500, 500), pos = (200,0))
         for y,row in enumerate(player.board):
             for x,cell in enumerate(row):
                 if cell == "-":
@@ -252,12 +282,12 @@ class GameManager(Widget):
                         size = (100, 100),
                         pos = (0,0),
                     ))
-        labelLayoutY = GridLayout(cols = 12, rows = 1,size = (500, 500), pos = (0,275))
+        labelLayoutY = GridLayout(cols = 12, rows = 1,size = (500, 500), pos = (200,275))
         letters = ["A","B","C","D","E","F","G","H","I","J","K","L"]
         for i in letters:
             labelLayoutY.add_widget(Label(text = i, font_size = 32))
         
-        labelLayoutX = GridLayout(cols = 1, rows = 12,size = (500, 500), pos = (275,0))
+        labelLayoutX = GridLayout(cols = 1, rows = 12,size = (500, 500), pos = (475,0))
         for i in range(12):
             labelLayoutX.add_widget(Label(text = str(i+1), font_size = 32)) 
         self.add_widget(labelLayoutY)
@@ -266,7 +296,7 @@ class GameManager(Widget):
     
     def makeFiringBoard(self,player):
         global firingLayout
-        firingLayout = GridLayout(cols = 12, rows = 12,size = (500, 500), pos = (700,0))
+        firingLayout = GridLayout(cols = 12, rows = 12,size = (500, 500), pos = (1050,0))
         for y,row in enumerate(player.firingBoard):
             for x,cell in enumerate(row):
                 if cell == "-":
@@ -294,12 +324,12 @@ class GameManager(Widget):
                         pos = (0,0),
                     ))
         
-        labelLayoutY = GridLayout(cols = 12, rows = 1,size = (500, 500), pos = (700,275))
+        labelLayoutY = GridLayout(cols = 12, rows = 1,size = (500, 500), pos = (1050,275))
         letters = ["A","B","C","D","E","F","G","H","I","J","K","L"]
         for i in letters:
             labelLayoutY.add_widget(Label(text = i, font_size = 32))
         
-        labelLayoutX = GridLayout(cols = 1, rows = 12,size = (500, 500), pos = (975,0))
+        labelLayoutX = GridLayout(cols = 1, rows = 12,size = (500, 500), pos = (1325,0))
         for i in range(12):
             labelLayoutX.add_widget(Label(text = str(i+1), font_size = 32)) 
         self.add_widget(labelLayoutY)
@@ -307,7 +337,7 @@ class GameManager(Widget):
         self.add_widget(firingLayout)
     
     def takeInput(self,player):
-        layout = GridLayout(cols = 1, rows = 2,size = (150, 200), pos = (550,200))
+        layout = GridLayout(cols = 1, rows = 2,size = (150, 200), pos = (800,200))
         global t
         t = TextInput(font_size = 50, 
                       size_hint_y = None, 
@@ -328,6 +358,34 @@ class GameManager(Widget):
         layout.add_widget(t)
         self.add_widget(layout)
     
+    def updateScreen(self):
+        print(currentPlayer.number,enemy.number)
+        if playerTurn == player1:
+            if currentPlayer.checkWin(enemy) == True:
+                print("Player" + str(currentPlayer.number) + " wins!")
+                errorBox.text = str(currentPlayer.number) + " wins!"
+            mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
+            self.updateFiringBoard(currentPlayer)
+            self.updateMyBoard(currentPlayer)
+            self.updateCash(currentPlayer)
+            self.update_shop(currentPlayer)
+        elif playerTurn == player2:
+            if currentPlayer.checkWin(enemy) == True:
+                print(str(currentPlayer.number) + " wins!")
+            mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
+            self.updateFiringBoard(currentPlayer)
+            self.updateMyBoard(currentPlayer)
+            self.updateCash(currentPlayer)
+            self.update_shop(currentPlayer)
+            
+    def checkInput(self):
+        global t
+        if len(t.text) != 2 and len(t.text) != 3:
+            return (False)
+        if t.text[0].upper() not in "ABCDEFGHIJKL" or t.text[1:] not in "123456789101112":
+            return (False)
+        return (True)
+        
     def release(self):
         global currentPlayer
         global playerTurn
@@ -335,71 +393,82 @@ class GameManager(Widget):
         global firingLayout
         global mainLabel
         global enemy
+        global errorBox
         global showBackground
         global player1ExtraTurn
         global player2ExtraTurn
         if player1ExtraTurn > 0:
+            if self.checkInput() == False:
+                return()
             player1ExtraTurn -= 1
             self.updateFiringBoard(currentPlayer)
             self.updateMyBoard(currentPlayer)
             self.updateCash(currentPlayer)
+            errorBox.text = ""
             if currentPlayer.checkWin(enemy) == True:
                 print("Player" + str(currentPlayer.number) + " wins!")
                 errorBox.text = str(currentPlayer.number) + " wins!"
             return()
         elif playerTurn == player1:
+            if self.checkInput() == False:
+                return()
             self.updateInput()
             if currentPlayer.checkWin(enemy) == True:
                 print("Player" + str(currentPlayer.number) + " wins!")
                 errorBox.text = str(currentPlayer.number) + " wins!"
-            enemy = player2
             currentPlayer = player2
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             enemy = player1
             self.updateFiringBoard(currentPlayer)
             self.updateMyBoard(currentPlayer)
             self.updateCash(currentPlayer)
+            errorBox.text = ""
             self.update_shop(currentPlayer)
             self.backgroundImageButton()
             showBackground = True
         elif player2ExtraTurn > 0:
+            if self.checkInput() == False:
+                return()
             player2ExtraTurn -= 1
             self.updateFiringBoard(currentPlayer)
             self.updateMyBoard(currentPlayer)
             self.updateCash(currentPlayer)
+            errorBox.text = ""
             if currentPlayer.checkWin(enemy) == True:
                 print(str(currentPlayer.number) + " wins!")
             return()
         elif playerTurn == player2:
+            if self.checkInput() == False:
+                return()
             self.updateInput()
             if currentPlayer.checkWin(enemy) == True:
                 print(str(currentPlayer.number) + " wins!")
-            enemy = player1
             currentPlayer = player1
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             enemy = player2
             self.updateFiringBoard(currentPlayer)
             self.updateMyBoard(currentPlayer)
             self.updateCash(currentPlayer)
+            errorBox.text = ""
             self.update_shop(currentPlayer)
             self.backgroundImageButton()
             showBackground = True
             
     def label(self):
         global mainLabel
-        mainLabel = Label(text = "Player " + str(currentPlayer.number) + "'s turn", font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (150, 670))
+        mainLabel = Label(text = "Player " + str(currentPlayer.number) + "'s turn", font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (850, 675))
         self.add_widget(mainLabel)
     def instructions(self):
         global instruct
-        instruct = Label(text = "To place a ship, input the spot [A1].\nThis will be the bottom or left corner of your ship.\nThen put a space followed by an 'h' for horziontal or a 'v' for vertical.", font_size = 25, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (750, 670))
+        instruct = Label(text = "To place a ship, input the spot [A1].\nThis will be the bottom or left corner of your ship.\nThen put a space followed by an 'h' for horziontal or a 'v' for vertical.\nExample: [A1 h]", font_size = 25, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (1300, 250))
         self.add_widget(instruct)
     def placeShipText(self):
         global placeShipLabel
-        placeShipLabel = Label(text = f"Place your {currentPlayer.shipList[0].length} long ship", font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (750, 470))
+        placeShipLabel = Label(text = f"Place your {currentPlayer.shipList[0].length} long ship", font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (850, 600))
         self.add_widget(placeShipLabel)
     def errorBox(self):
         global errorBox
-        errorBox = Label(text = "", font_size = 50, pos = (550, 570))
+        errorBox = Label(text = "", font_size = 50, pos = (830, 750))
         self.add_widget(errorBox)
     def updateMyBoard(self,player):
         global layout
@@ -496,44 +565,8 @@ class GameManager(Widget):
             self.make_shop(currentPlayer)
             self.takeInput(currentPlayer)
             instruct.text = "To fire, input the spot [A1].\nThis will be the spot you fire at."
+            instruct.pos = (825, 550)
             self.remove_widget(placeShipLabel)
             
 root = BattleshipApp() 
 root.run()
-
-'''def main():
-    for i in player1.board:
-        print(i)
-    player1.createShipList()
-    player2.createShipList()
-    print("Player 1 place your ships: ")
-    player1.placeShip()
-    print("Player 2 place your ships: ")
-    player2.placeShip()
-    while True:
-        print("Player 1: ")
-        player1.buyPowerUps()
-        power1 = player1.usePowerUp()
-        if power1 != False:
-            player1.choosePowerUp(player2)
-        else:
-            print("Player 1 did not use a power up.")
-            print("Player 1: ")
-            player1.shootMissile(player2)
-        if player1.checkWin():
-            print("Player 1 wins!")
-            break
-        print("Player 2: ")
-        player2.buyPowerUps()
-        power2 = player2.usePowerUp()
-        if power2 != False:
-            player2.choosePowerUp(player1)
-        else:
-            print("Player 2 did not use a power up.")
-            print("Player 2: ")
-            player2.shootMissile(player1)
-        if player2.checkWin():
-            print("Player 2 wins!")
-            break
-
-main()'''

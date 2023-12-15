@@ -19,10 +19,14 @@ class Player:
     def createShipList(self):
         self.shipList.append(ship.Ship(5,5,[]))
         self.ships += 1
-        #self.shipList.append(ship.Ship(4,4,[]))
+        self.shipList.append(ship.Ship(4,4,[]))
+        self.ships += 1
         #self.shipList.append(ship.Ship(3,3,[]))
+        #self.ships += 1
         #self.shipList.append(ship.Ship(3,3,[]))
+        #self.ships += 1
         #self.shipList.append(ship.Ship(2,2,[]))
+        #self.ships += 1
     def placeShip(self,place,ship,placeShipLabel,error):
         if ship == None:
             return ()
@@ -119,10 +123,10 @@ class Player:
                             print(row[i])
     
     def shootMissileParam(self,enemy,inp,error):
-        if inp[0].upper() not in "ABCDEFGHIJKL" or inp[1:] not in "123456789101112":
+        if len(inp) != 2 and len(inp) != 3:
             error.text = "Invalid input! Try again"
             return ()
-        if len(inp) != 2 and len(inp) != 3:
+        if inp[0].upper() not in "ABCDEFGHIJKL" or inp[1:] not in "123456789101112":
             error.text = "Invalid input! Try again"
             return ()
         y = int(inp[1:])-1
@@ -130,13 +134,13 @@ class Player:
         if enemy.board[y][x] == "S":
             self.firingBoard[y][x] = "H"
             enemy.board[y][x] = "H"
+            self.cash += 10
             for i in enemy.shipList:
                 for coord in i.coordinates:
                     if coord == [y,x]:
                         i.health -= 1
                         if i.health == 0:
                             print("Sunk!")
-                            self.cash += 100
         elif enemy.board[y][x] == "H":
             print("Already hit!")
         elif enemy.board[y][x] == "-":
@@ -163,36 +167,36 @@ class Player:
             return False
         
     def buy2x2(self,cash,error):
-        if self.cash < 10:
+        if self.cash < 40:
             print("Not enough cash!")
             error.text = "Not enough cash!"
             return False
         else:
-            self.cash -= 10
+            self.cash -= 40
             self.powerUps.append("2x2")
             print("2x2 power up bought!")
             error.text = "2x2 power up bought!"
         cash.text = "Cash: " + str(self.cash)
     
     def buyUAV(self,cash,error):
-        if self.cash < 25:
-            print("Not enough cash!")
-            error.text = "Not enough cash!"
-            return False
-        else:
-            self.cash -= 25
-            self.powerUps.append("UAV")
-            print("UAV power up bought!")
-            error.text = "UAV power up bought!"
-        cash.text = "Cash: " + str(self.cash)
-    
-    def buyAirstrike(self,cash,error):
         if self.cash < 50:
             print("Not enough cash!")
             error.text = "Not enough cash!"
             return False
         else:
             self.cash -= 50
+            self.powerUps.append("UAV")
+            print("UAV power up bought!")
+            error.text = "UAV power up bought!"
+        cash.text = "Cash: " + str(self.cash)
+    
+    def buyAirstrike(self,cash,error):
+        if self.cash < 40:
+            print("Not enough cash!")
+            error.text = "Not enough cash!"
+            return False
+        else:
+            self.cash -= 40
             self.powerUps.append("Airstrike")
             print("Airstrike power up bought!")
             error.text = "Airstrike power up bought!"
@@ -200,24 +204,24 @@ class Player:
     
     def buyTwoMoves(self,cash,error):
         print(self.cash,self.number)
-        if self.cash < 50:
+        if self.cash < 20:
             print("Not enough cash!")
             error.text = "Not enough cash!"
             return False
         else:
-            self.cash -= 50
+            self.cash -= 20
             self.powerUps.append("Two Moves")
             print("Two Moves power up bought!")
             error.text = "Two Moves power up bought!"
         cash.text = "Cash: " + str(self.cash)
 
     def buyXHit(self,cash,error):
-        if self.cash < 50:
+        if self.cash < 40:
             print("Not enough cash!")
             error.text = "Not enough cash!"
             return False
         else:
-            self.cash -= 50
+            self.cash -= 40
             self.powerUps.append("X Hit")
             print("X Hit power up bought!")
             error.text = "X Hit power up bought!"
@@ -226,13 +230,12 @@ class Player:
     def useXHit(self,enemy, coord, error):
         print(coord)
         if self.powerUps.count("X Hit") == 0:
+            error.text = "You don't have an X Hit!"
             return()
-        if coord[0].upper() not in "ABCDEFGHIJKL" or coord[1:] not in "123456789101112":
-            print("Invalid input! Try again")
+        if len(coord) != 2 and len(coord) != 3:
             error.text = "Invalid input! Try again"
             return ()
-        if len(coord) != 2 and len(coord) != 3:
-            print("Invalid input! Try again")
+        if coord[0].upper() not in "ABCDEFGHIJKL" or coord[1:] not in "123456789101112":
             error.text = "Invalid input! Try again"
             return ()
         y,x = int(coord[1:])-1, ord(coord[0].upper())-65
@@ -313,11 +316,12 @@ class Player:
 
     def use2x2(self, enemy, coord,error):
         if self.powerUps.count("2x2") == 0:
+            error.text = "You don't have a 2x2!"
             return()
-        if coord[0].upper() not in "ABCDEFGHIJKL" or coord[1:] not in "123456789101112":
+        if len(coord) != 2 and len(coord) != 3:
             error.text = "Invalid input! Try again"
             return ()
-        if len(coord) != 2 and len(coord) != 3:
+        if coord[0].upper() not in "ABCDEFGHIJKL" or coord[1:] not in "123456789101112":
             error.text = "Invalid input! Try again"
             return ()
         y,x = int(coord[1:])-1, ord(coord[0].upper())-65
@@ -337,11 +341,11 @@ class Player:
                     enemy.board[y-i][x+j] = "M"
                     self.firingBoard[y-i][x+j] = "M"
         self.powerUps.remove("2x2")
-    def useAirstrike(self, enemy):
+    def useAirstrike(self, enemy, error):
         coords = []
         coord_options = []
-        
         if self.powerUps.count("Airstrike") == 0:
+            error.text = "You don't have an Airstrike!"
             return()
         
         for letter in range(ord('A'), ord('M')):
@@ -380,6 +384,12 @@ class Player:
         if self.powerUps.count("UAV") == 0:
             error.text = "You don't have a UAV!"
             return()
+        if len(coord) != 1:
+            error.text = "Invalid input! Try again"
+            return ()
+        if str(coord[0]) not in "abcdefghijklABCDEFGHIJKL123456789101112":
+            error.text = "Invalid input! Try again"
+            return ()
         if coord.isnumeric():
             y = int(coord)-1
             for x in range(12):
@@ -397,7 +407,10 @@ class Player:
                     self.firingBoard[y][x] = "M"
 
         self.powerUps.remove("UAV")
-    def useTwoMoves(self, enemy):
+    def useTwoMoves(self, enemy,error):
+        if self.powerUps.count("Two Moves") == 0:
+            error.text = "You don't have a Two Moves!"
+            return()
         self.shootMissile(enemy)
         self.shootMissile(enemy)
         self.powerUps.remove("useTwoMoves")
