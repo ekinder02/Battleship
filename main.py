@@ -60,6 +60,7 @@ class GameManager(Widget):
         self.label()
         self.instructions()
         self.errorBox()
+        # self.nextTurnImageButton()
         self.backgroundImageButton()
         self.clock = Clock.schedule_interval(self.update, 1.0/360.0)
 
@@ -220,6 +221,15 @@ class GameManager(Widget):
         elif currentPlayer == player2:
             global player2ExtraTurn
             player2ExtraTurn += 1
+
+    def nextTurnImageButton(self):
+        self.nextTurnImage = Button(text ="", size = (2000, 1000),
+                     background_normal = 'metalBG2.jpg',
+                     size_hint = (2000, 1000),
+                     pos_hint = {"x":100, "y":100}
+                   )
+        self.nextTurnImage.bind(on_press = lambda x: self.clickedBackground(self.nextTurnImage))
+        self.add_widget(self.nextTurnImage)
 
     def backgroundImageButton(self):
         self.backgroundImage = Button(text ="", size = (2000, 1000),
@@ -424,7 +434,7 @@ class GameManager(Widget):
             self.updateCash(currentPlayer)
             errorBox.text = ""
             self.update_shop(currentPlayer)
-            self.backgroundImageButton()
+            self.nextTurnImageButton()
             showBackground = True
         elif player2ExtraTurn > 0:
             if self.checkInput() == False:
@@ -451,7 +461,7 @@ class GameManager(Widget):
             self.updateCash(currentPlayer)
             errorBox.text = ""
             self.update_shop(currentPlayer)
-            self.backgroundImageButton()
+            self.nextTurnImageButton()
             showBackground = True
             
     def label(self):

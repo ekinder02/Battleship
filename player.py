@@ -21,12 +21,12 @@ class Player:
         self.ships += 1
         # self.shipList.append(ship.Ship(4,4,[]))
         # self.ships += 1
-        #self.shipList.append(ship.Ship(3,3,[]))
-        #self.ships += 1
-        #self.shipList.append(ship.Ship(3,3,[]))
-        #self.ships += 1
-        #self.shipList.append(ship.Ship(2,2,[]))
-        #self.ships += 1
+        # self.shipList.append(ship.Ship(3,3,[]))
+        # self.ships += 1
+        # self.shipList.append(ship.Ship(3,3,[]))
+        # self.ships += 1
+        # self.shipList.append(ship.Ship(2,2,[]))
+        # self.ships += 1
     def placeShip(self,place,ship,placeShipLabel,error):
         if ship == None:
             return ()
