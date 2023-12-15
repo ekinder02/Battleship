@@ -58,11 +58,20 @@ class GameManager(Widget):
         self.placeShip()
         self.placeShipText()
         self.label()
-        self.instructions()
+        self.instructions2()
         self.errorBox()
-        # self.nextTurnImageButton()
+        self.instructions()
         self.backgroundImageButton()
         self.clock = Clock.schedule_interval(self.update, 1.0/360.0)
+
+    def instructions2(self):
+        instructionslayout = GridLayout(cols = 1, rows = 1,size = (100, 100), pos = (1500,650))
+        button = Button(text ="Instructions", background_color =(255, 1, 1, 1), size = (100, 100), pos = (0,0))
+        button.bind(on_press = lambda x: self.instructionsImageButton())
+        instructionslayout.add_widget(button)
+        self.add_widget(instructionslayout)
+
+
 
     def make_shop(self, player):
         global cash     
@@ -221,6 +230,16 @@ class GameManager(Widget):
         elif currentPlayer == player2:
             global player2ExtraTurn
             player2ExtraTurn += 1
+
+    def instructionsImageButton(self):
+        self.instructionImageButton = Button(text ="", size = (2000, 1000),
+                     background_normal = 'instructions3.jpg',
+                     size_hint = (2000, 1000),
+                     pos_hint = {"x":100, "y":100}
+                   )
+        self.instructionImageButton.bind(on_press = lambda x: self.clickedBackground(self.instructionImageButton))
+        self.add_widget(self.instructionImageButton)
+
 
     def nextTurnImageButton(self):
         self.nextTurnImage = Button(text ="", size = (2000, 1000),
@@ -577,6 +596,7 @@ class GameManager(Widget):
             instruct.text = "To fire, input the spot [A1].\nThis will be the spot you fire at."
             instruct.pos = (825, 550)
             self.remove_widget(placeShipLabel)
+            self.instructions2()
             
 root = BattleshipApp() 
 root.run()
