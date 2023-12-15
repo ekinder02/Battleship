@@ -1,5 +1,7 @@
 import ship
 import random
+
+#creates player class and adds shipList, board, cash, number, and powerUps to each player
 class Player:
     def __init__(self, shipList, board, cash, number, powerUps,firingBoard):
         self.shipList = shipList
@@ -9,24 +11,27 @@ class Player:
         self.number = number
         self.powerUps = powerUps
         self.ships = 0
+    #creates a clean board
     def createCleanBoard(self):
         self.board = []
         self.firingBoard = []
         for i in range(12):
             self.board.append(["-"]*12)
             self.firingBoard.append(["-"]*12)
-            
+    
+    #creates all the ships for the player
     def createShipList(self):
         self.shipList.append(ship.Ship(5,5,[]))
         self.ships += 1
-        # self.shipList.append(ship.Ship(4,4,[]))
-        # self.ships += 1
-        # self.shipList.append(ship.Ship(3,3,[]))
-        # self.ships += 1
-        # self.shipList.append(ship.Ship(3,3,[]))
-        # self.ships += 1
-        # self.shipList.append(ship.Ship(2,2,[]))
-        # self.ships += 1
+        self.shipList.append(ship.Ship(4,4,[]))
+        self.ships += 1
+        self.shipList.append(ship.Ship(3,3,[]))
+        self.ships += 1
+        self.shipList.append(ship.Ship(3,3,[]))
+        self.ships += 1
+        self.shipList.append(ship.Ship(2,2,[]))
+        self.ships += 1
+    #places the ships on the board
     def placeShip(self,place,ship,placeShipLabel,error):
         if ship == None:
             return ()
@@ -69,59 +74,8 @@ class Player:
         self.ships -= 1
         if self.shipList != []:
             placeShipLabel.text = "Place your " + str(self.shipList[0].length) + " length ship"
-    def usePowerUp(self):
-        x = input("Do you want to use a power up? (Y/N) ").lower()
-        if x == "y":
-            return True
-        else:
-            return False
-
-    def choosePowerUp(self,enemy):
-        print("You have the following power ups: ")
-
-        for i in self.powerUps:
-            print(i)
-        x = input("Which power up do you want to use? ").lower()
-        if x == "2x2":
-            self.use2x2(enemy)
-        elif x == "uav":
-            self.useUAV(enemy)
-        elif x == "airstrike":
-            self.useAirstrike(enemy)
-        elif x == "boat upgrade":
-            self.useBoatUpgrade()
-        elif x == "move boat":
-            self.useMoveBoat()
-        elif x == "two moves":
-            self.useTwoMoves(enemy)
-        elif x == "x hit":
-            self.useXHit(enemy)
-    
-    def shootMissile(self, enemy):
-        coord = input("Shoot your missile: (A1) ").upper()
-        x,y = ord(coord[0])-65, int(coord[1:])-1
-        if enemy.board[y][x] == "S":
-            enemy.board[y][x] = "H"
-            print("Hit!")
-            for i in enemy.shipList:
-                for coord in i.coordinates:
-                    if coord == [y,x]:
-                        i.health -= 1
-                        if i.health == 0:
-                            print("Sunk!")
-                            self.cash += 100
-        elif enemy.board[y][x] == "H":
-            print("Already hit!")
-        else:
-            enemy.board[y][x] = "M"
-            print("Miss!")
-        for row in enemy.board:
-                    for i in range(12):
-                        if i != 11:
-                            print(row[i], end=" ")
-                        else:
-                            print(row[i])
-    
+            
+    #shoots a missile from player input
     def shootMissileParam(self,enemy,inp,error):
         if len(inp) != 2 and len(inp) != 3:
             error.text = "Invalid input! Try again"
@@ -147,25 +101,8 @@ class Player:
             self.firingBoard[y][x] = "M"
             enemy.board[y][x] = "M"
             print("Miss!")
-    
-    def buyPowerUps(self):
-
-        z = input("Do you want to buy a power up? (Y/N) ").lower()
-        if z == "y":
-            x = input("Which power up do you want to buy? ").lower()
-            if x == "2x2":
-                self.buy2x2()
-            elif x == "uav":
-                self.buyUAV()
-            elif x == "airstrike":
-                self.buyAirstrike()
-            elif x == "two moves":
-                self.buyTwoMoves()
-            elif x == "x hit":
-                self.buyXHit()
-        else:
-            return False
         
+    #buys a 2x2 power up
     def buy2x2(self,cash,error):
         if self.cash < 40:
             print("Not enough cash!")
@@ -178,6 +115,7 @@ class Player:
             error.text = "2x2 power up bought!"
         cash.text = "Cash: " + str(self.cash)
     
+    #buys a UAV power up
     def buyUAV(self,cash,error):
         if self.cash < 50:
             print("Not enough cash!")
@@ -190,6 +128,7 @@ class Player:
             error.text = "UAV power up bought!"
         cash.text = "Cash: " + str(self.cash)
     
+    #buys an airstrike power up
     def buyAirstrike(self,cash,error):
         if self.cash < 40:
             print("Not enough cash!")
@@ -202,6 +141,7 @@ class Player:
             error.text = "Airstrike power up bought!"
         cash.text = "Cash: " + str(self.cash)
     
+    #buys an extra moves power up
     def buyTwoMoves(self,cash,error):
         print(self.cash,self.number)
         if self.cash < 20:
@@ -214,7 +154,8 @@ class Player:
             print("Two Moves power up bought!")
             error.text = "Two Moves power up bought!"
         cash.text = "Cash: " + str(self.cash)
-
+        
+    #buys an X Hit power up
     def buyXHit(self,cash,error):
         if self.cash < 40:
             print("Not enough cash!")
@@ -227,6 +168,7 @@ class Player:
             error.text = "X Hit power up bought!"
         cash.text = "Cash: " + str(self.cash)
     
+    #uses an X Hit power up
     def useXHit(self,enemy, coord, error):
         print(coord)
         if self.powerUps.count("X Hit") == 0:
@@ -310,7 +252,7 @@ class Player:
                 self.firingBoard[y-1][x+1] = "M"
         self.powerUps.remove("X Hit")
         
-
+    #uses a 2x2 power up
     def use2x2(self, enemy, coord,error):
         if self.powerUps.count("2x2") == 0:
             error.text = "You don't have a 2x2!"
@@ -340,6 +282,8 @@ class Player:
                     enemy.board[y-i][x+j] = "M"
                     self.firingBoard[y-i][x+j] = "M"
         self.powerUps.remove("2x2")
+    
+    #uses an airstrike power up
     def useAirstrike(self, enemy, error):
         coords = []
         coord_options = []
@@ -378,6 +322,7 @@ class Player:
                 
         self.powerUps.remove("Airstrike")
 
+    #uses a UAV power up
     def useUAV(self,enemy, coord,error):
         print(coord)
         if self.powerUps.count("UAV") == 0:
@@ -406,16 +351,8 @@ class Player:
                     self.firingBoard[y][x] = "M"
 
         self.powerUps.remove("UAV")
-    def useTwoMoves(self, enemy,error):
-        if self.powerUps.count("Two Moves") == 0:
-            error.text = "You don't have a Two Moves!"
-            return()
-        self.shootMissile(enemy)
-        self.shootMissile(enemy)
-        self.powerUps.remove("useTwoMoves")
-
-   
-        
+      
+    #checks if the player has won  
     def checkWin(self,enemy):
         for i in enemy.shipList:
             if i.health != 0:
