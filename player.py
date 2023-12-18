@@ -73,7 +73,7 @@ class Player:
         error.text = ""
         self.ships -= 1
         if self.shipList != []:
-            placeShipLabel.text = "Place your " + str(self.shipList[0].length) + " length ship"
+            placeShipLabel.text = "Place your " + str(self.shipList[-self.ships].length) + " length ship"
             
     #shoots a missile from player input
     def shootMissileParam(self,enemy,inp,error):

@@ -294,7 +294,7 @@ class GameManager(Widget):
                         pos = (0,0),
                     )
         global currentPlayer
-        placeButton.bind(on_press = lambda x: currentPlayer.placeShip(shipLabel.text,currentPlayer.shipList[currentPlayer.ships - 1],placeShipLabel,errorBox))
+        placeButton.bind(on_press = lambda x: currentPlayer.placeShip(shipLabel.text,currentPlayer.shipList[-currentPlayer.ships],placeShipLabel,errorBox))
         placeShipLayout.add_widget(placeButton)
         placeShipLayout.add_widget(shipLabel)
         self.add_widget(placeShipLayout)
@@ -523,7 +523,7 @@ class GameManager(Widget):
     #shows the place ship text
     def placeShipText(self):
         global placeShipLabel
-        placeShipLabel = Label(text = f"Place your {currentPlayer.shipList[-1].length} long ship", font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (850, 600))
+        placeShipLabel = Label(text = f"Place your {currentPlayer.shipList[-currentPlayer.ships].length} long ship", font_size = 50, size_hint = (1, 1), pos_hint = {"x":0, "y":0}, pos = (850, 600))
         self.add_widget(placeShipLabel)
     #shows errors
     def errorBox(self):
@@ -615,7 +615,7 @@ class GameManager(Widget):
         if player1.ships == 0 and player2.ships != 0 and currentPlayer == player1 and placePhase == True:
             currentPlayer = player2
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
-            placeShipLabel.text = "Place your " + str(currentPlayer.shipList[0].length) + " length ship"
+            placeShipLabel.text = "Place your " + str(currentPlayer.shipList[-currentPlayer.ships].length) + " length ship"
         elif player2.ships == 0 and placePhase == True:
             currentPlayer = player1
             enemy = player2
