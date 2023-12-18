@@ -424,6 +424,7 @@ class GameManager(Widget):
         elif playerTurn == player2:
             if currentPlayer.checkWin(enemy) == True:
                 print(str(currentPlayer.number) + " wins!")
+                errorBox.text = str(currentPlayer.number) + " wins!"
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             self.updateFiringBoard(currentPlayer)
             self.updateMyBoard(currentPlayer)
@@ -492,6 +493,7 @@ class GameManager(Widget):
             errorBox.text = ""
             if currentPlayer.checkWin(enemy) == True:
                 print(str(currentPlayer.number) + " wins!")
+                errorBox.text = str(currentPlayer.number) + " wins!"
             return()
         elif playerTurn == player2:
             if self.checkInput() == False:
@@ -499,6 +501,7 @@ class GameManager(Widget):
             self.updateInput()
             if currentPlayer.checkWin(enemy) == True:
                 print(str(currentPlayer.number) + " wins!")
+                errorBox.text = str(currentPlayer.number) + " wins!"
             currentPlayer = player1
             mainLabel.text = "Player " + str(currentPlayer.number) + "'s turn"
             enemy = player2
